@@ -1,0 +1,29 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="/public/css/main.css">
+</head>
+<body>
+    <h1>Sign Up</h1>
+    <form method="POST" id="myForm">
+        <label id="formLabel" for="fullName"> Full Name: </label>
+        <input type="text" name="fullName" id="fullName" />
+        <label id="formLabel" for="typeOfUser"> Type of User: </label>
+        <select name="typeOfUser" id="typeOfUser">
+            <option value="organizer">Organizer</option>
+            <option value="attendee">Attendee</option>
+          </select>
+        <label id="formLabel" for="age"> Age: </label>
+        <input type="text" name="age" id="age" />
+        <label id="formLabel" for="username"> Create Username: </label>
+        <input type="text" name="username" id="username" />
+        <label id="formLabel" for="password"> Create Password: </label>
+        <input type="text" name="password" id="password" />
+        <button type="submit">Sign In</button>
+    </form>
+    <a href="./"><button>Back to Home Page.</button></a>
+    <script src="/public/js/main.js"></script>
+</body>
+</html>

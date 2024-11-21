@@ -1,0 +1,16 @@
+{
+  "name": "cs546finalproject",
+  "version": "1.0.0",
+  "description": "Final Project for CS546",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "Group 27",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}
