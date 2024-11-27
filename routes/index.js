@@ -1,9 +1,9 @@
 import projectRoutes from './home.js';
-import dataRoutes from './api/index.js'
+import apiRouter from './api/index.js'
 
 const constructorMethod = (app) => {
+  app.use('/api', apiRouter);
   app.use('/', projectRoutes);
-  app.use('/api', dataRoutes);
   app.use('*', (req, res) => {
     res.status(404).json({error: 'Route Not found'});
   });

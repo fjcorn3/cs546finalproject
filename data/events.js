@@ -2,7 +2,6 @@ import { events } from '../config/mongoCollections.js';
 import { ObjectId } from 'mongodb';
 
 import userData from './users.js';
-import validation from '../validation.js';
 
 const exportedMethods = {
 
@@ -12,8 +11,6 @@ const exportedMethods = {
   },
 
   async getEventById(id) {
-    id = validation.checkId(id);
-    
     const eventCollection = await events();
     const event = await eventCollection.findOne({_id: new ObjectId(id)});
     if (!event) throw 'Error: Event not found';

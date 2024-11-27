@@ -1,6 +1,5 @@
 import {users} from '../config/mongoCollections.js';
 import {ObjectId} from 'mongodb';
-import validation from '../validation.js';
 
 let exportedMethods = {
 
@@ -11,7 +10,6 @@ let exportedMethods = {
   },
 
   async getUserById(id) {
-    id = validation.checkId(id);
     const userCollection = await users();
     const user = await userCollection.findOne({_id: new ObjectId(id)});
     if (!user) throw 'Error: User not found';
