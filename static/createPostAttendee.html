@@ -1,0 +1,21 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post</title>
+    <link rel="stylesheet" href="/public/css/main.css">
+</head>
+<body>
+    <h1>Create Post</h1>
+    <form method="POST" id="myForm">
+        <label id="formLabel" for="eventName"> Enter Event Name: </label>
+        <input type="text" name="eventname" id="eventname" />
+        <label id="formLabel" for="postImage"> Upload Photo: </label>
+        <input type="file" name="postimage" id="postimage" />
+        <label id="formLabel" for="description"> Enter Description: </label>
+        <input type="text" name="description" id="description" />
+        <a href="./eventPage"><button>Create</button></a>
+    </form>
+    <script src="/public/js/main.js"></script>
+</body>
+</html>

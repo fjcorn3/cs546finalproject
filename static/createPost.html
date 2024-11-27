@@ -1,0 +1,29 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post</title>
+    <link rel="stylesheet" href="/public/css/main.css">
+</head>
+<body>
+    <h1>Create Post</h1>
+    <form method="POST" id="myForm">
+        <label id="formLabel" for="postImage"> Upload Photo: </label>
+        <input type="file" name="postimage" id="postimage" />
+        <label id="formLabel" for="description"> Enter Description: </label>
+        <input type="text" name="description" id="description" />
+        <!-- headcount should be isnitailed to zero and put as part of the post onece the post is uploaded -->
+        <div id="headCount"></div>
+        <label id="formLabel" for="date"> Enter Date: </label>
+        <input type="date" name="date" id="date" />
+        <label id="formLabel" for="time"> Enter Time: </label>
+        <input type="text" name="time" id="time" />
+        <label id="formLabel" for="RSVP"> Add An RSVP Form: </label>
+        <input type="radio" name="RSVP" id="RSVP" value="Y"/>
+        <input type="radio" name="RSVP" id="RSVP" value="N"/>
+        <!-- If they decided to have an rsvp button shoudl be factored in when making a psot in the script -->
+        <a href="./eventPage"><button>Create</button></a>
+    </form>
+    <script src="/public/js/main.js"></script>
+</body>
+</html>
