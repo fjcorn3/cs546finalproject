@@ -35,6 +35,6 @@ events {
 comments {
   _id: ObjectId,
   userId: ObjectId,
-  eventId: eventId,
+  eventId: ObjectId,
   text: string
 }

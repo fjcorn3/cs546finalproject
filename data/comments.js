@@ -17,7 +17,7 @@ const exportedMethods = {
     const commentCollection = await comments();
     const comment = await commentCollection.findOne({_id: id});
     
-    if(!comment) throw Error('User Not Found');
+    if(!comment) throw Error('Comment Not Found');
     return comment;
   },
 
@@ -54,18 +54,18 @@ const exportedMethods = {
     if(!id || !ObjectId.isValid(id)) throw Error('Invalid Object Id');
     id = ObjectId(id);
 
-    if(!validEventFields(fields)) throw Error('Invalid Fields for Event');
+    if(!validCommentFields(fields)) throw Error('Invalid Fields for Comment');
 
-    const eventCollection = await events();
-    const event = await eventCollection.findOneAndReplace(
+    const commentCollection = await comments();
+    const comment = await commentCollection.findOneAndReplace(
       {_id: id},
       fields,
       {returnDocument: 'after'}
     );
 
-    if(!event) throw Error('Update Failed');
+    if(!comment) throw Error('Update Failed');
 
-    return event;
+    return comment;
   }
 };
 

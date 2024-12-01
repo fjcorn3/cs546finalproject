@@ -17,7 +17,7 @@ const exportedMethods = {
     const eventCollection = await events();
     const event = await eventCollection.findOne({_id: id});
     
-    if(!event) throw Error('User Not Found');
+    if(!event) throw Error('Event Not Found');
     return event;
   },
 

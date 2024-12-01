@@ -20,10 +20,10 @@ router.post('/', async (req, res) => {
   let comment = req.body;
 
   if(!comment || Object.keys(comment).length === 0 || !validComment(comment)) {
-    return res.status(400).json({error: 'Missing fields in request body'});
+    return res.status(400).json({error: 'Missing/Incorrect fields in request body'});
   }
 
-  comment = Object.fromEntries(Object.entries(comment).map(([key, val]) => [key, xss(val)]));
+  // comment = Object.fromEntries(Object.entries(comment).map(([key, val]) => [key, xss(val)]));
 
   try {
     const newComment = await commentData.addComment(comment);
@@ -59,7 +59,7 @@ router.patch('/:commentId', async (req, res) => {
     return res.status(400).json({error: 'Missing fields in the request body'});
   }
 
-  updateFields = Object.fromEntries(Object.entries(updateFields).map(([key, val]) => [key, xss(val)]));
+  // updateFields = Object.fromEntries(Object.entries(updateFields).map(([key, val]) => [key, xss(val)]));
 
   try {
     const comment = await commentData.updateComment(commentId, updateFields);
