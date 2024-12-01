@@ -1,33 +1,67 @@
 import { events } from '../config/mongoCollections.js';
 import { ObjectId } from 'mongodb';
-
-import userData from './users.js';
+import { validEvent, validEventFields } from '../validation.js';
 
 const exportedMethods = {
 
   async getAllEvents() {
     const eventCollection = await events();
-    return await eventCollection.find({}).toArray();
+    const eventList = await eventCollection.find({}).toArray();
+    return eventList;
   },
 
   async getEventById(id) {
+    if(!id || !ObjectId.isValid(id)) throw Error('Invalid Object Id');
+    id = ObjectId(id);
+
     const eventCollection = await events();
-    const event = await eventCollection.findOne({_id: new ObjectId(id)});
-    if (!event) throw 'Error: Event not found';
+    const event = await eventCollection.findOne({_id: id});
+    
+    if(!event) throw Error('User Not Found');
+    return event;
+  },
+
+  async addEvent(event) {
+    if(!validEvent(event)) throw Error('Invalid Event');
+
+    const eventCollection = await events();
+    const insertionInfo = await eventCollection.insertOne(event);
+
+    if(!insertionInfo.acknowledged) throw Error('Insertion Failed');
+    
+    const newEvent = await eventCollection.findOne({_id: insertionInfo.insertedId});
+
+    return newEvent; 
+  },
+
+  async removeEvent(id) {
+    if(!id || !ObjectId.isValid(id)) throw Error('Invalid Object Id');
+    id = ObjectId(id);
+
+    const eventCollection = await events();
+    const event = await eventCollection.findOneAndDelete({_id: id});
+
+    if(!event) throw Error('Deletion Failed');
 
     return event;
   },
 
-  async addEvent(title, body, posterId, tags) {
-    // TODO
-  },
+  async updateEvent(id, fields) {
+    if(!id || !ObjectId.isValid(id)) throw Error('Invalid Object Id');
+    id = ObjectId(id);
 
-  async removeEvent(id) {
-    // TODO
-  },
+    if(!validEventFields(fields)) throw Error('Invalid Fields for Event');
 
-  async updatePostPatch(id, updatedPost) {
-    // TODO
+    const eventCollection = await events();
+    const event = await eventCollection.findOneAndReplace(
+      {_id: id},
+      fields,
+      {returnDocument: 'after'}
+    );
+
+    if(!event) throw Error('Update Failed');
+
+    return event;
   }
 };
 

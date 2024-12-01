@@ -1,5 +1,7 @@
 import { users } from '../config/mongoCollections.js';
 import { ObjectId } from 'mongodb';
+import { validUser, validUserFields } from '../validation.js';
+
 import bcrypt from 'bcryptjs';
 
 let exportedMethods = {
@@ -26,11 +28,13 @@ let exportedMethods = {
     user.password = await bcrypt.hash(user.password, 10);
 
     const userCollection = await users();
-    const insertionInfo = userCollection.insertOne(user);
+    const insertionInfo = await userCollection.insertOne(user);
 
     if(!insertionInfo.acknowledged) throw Error('Insertion Failed');
+  
+    const newUser = await userCollection.findOne({_id: insertionInfo.insertedId});
     
-    return insertionInfo.insertedId;
+    return newUser;
   },
   
   async removeUser(id) {
@@ -49,6 +53,8 @@ let exportedMethods = {
     if(!id || !ObjectId.isValid(id)) throw Error('Invalid Object Id');
     id = ObjectId(id);
 
+    if(!validUserFields(fields)) throw Error('Invalid fields for User');
+
     const userCollection = await users();
     const user = await userCollection.findOneAndReplace(
       {_id: id},
@@ -60,7 +66,6 @@ let exportedMethods = {
 
     return user;
   }
-
 };
 
 export default exportedMethods;
