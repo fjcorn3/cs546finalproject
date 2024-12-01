@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { ObjectId } from 'mongodb';
 import { validEvent, validEventFields } from '../../validation.js';
 import eventData from '../../data/events.js';
+import xss from 'xss';
 
 const router = Router();
 
@@ -16,11 +17,13 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  const event = req.body;
+  let event = req.body;
 
   if (!event || Object.keys(event).length === 0 || !validEvent(event)) {
     res.status(400).json({error: 'Missing fields in request body'});
   }
+
+  event = Object.fromEntries(Object.entries(event).map(([key, val]) => [key, xss(val)]));
 
   try {
     const newEvent = await eventData.addEvent(event);
@@ -48,13 +51,15 @@ router.get('/:eventId', async (req, res) => {
 
 router.patch('/:eventId', async (req, res) => {
   const eventId = req.params.eventId;
-  const updateFields = req.body;
+  let updateFields = req.body;
 
   if(!ObjectId.isValid(eventId)) res.status(400).json({error: 'Invalid Id'});
 
   if (!updateFields || Object.keys(updateFields).length === 0 || !validEventFields(updateFields)) {
     res.status(400).json({error: 'Missing fields in the request body'});
   }
+
+  updateFields = Object.fromEntries(Object.entries(updateFields).map(([key, val]) => [key, xss(val)]));
 
   try {
     const event = await eventData.updateEvent(eventId, updateFields);
