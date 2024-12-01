@@ -38,3 +38,13 @@ export const validEventFields = (event) => {
   // TODO
   return true;
 };
+
+export const validComment = (comment) => {
+  // TODO
+  return true;
+};
+
+export const validCommentFields = (comment) => {
+  // TODO
+  return true;
+};

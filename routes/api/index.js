@@ -7,5 +7,6 @@ const router = Router();
 
 router.use('/users', userRoutes);
 router.use('/events', eventRoutes);
+router.use('/comments', eventRoutes);
 
 export default router;
