@@ -70,4 +70,18 @@ router.patch('/:eventId', async (req, res) => {
   }
 });
 
+router.delete('/:eventId', async (req, res) => {
+  const eventId = req.params.eventId;
+
+  if(!ObjectId.isValid(eventId)) res.status(400).json({error: 'Invalid Id'});
+
+  try {
+    const event = await eventData.removeEvent(eventId);
+    res.json(event);
+  }
+  catch(e) {
+    res.status(404).json({Error: "Event Not Found"});
+  }
+});
+
 export default router;

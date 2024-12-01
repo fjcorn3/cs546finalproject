@@ -22,13 +22,15 @@ const exportedMethods = {
   },
 
   async addComment(comment) {
-    if(!validComment(comment)) throw Error('Invalid Event');
+    if(!validComment(comment)) throw Error('Invalid Comment');
 
     const commentCollection = await comments();
     const insertionInfo = await commentCollection.insertOne(comment);
 
     if(!insertionInfo.acknowledged) throw Error('Insertion Failed');
     
+    //TODO: Need to update user record and event record to include id of comment
+
     const newComment = await commentCollection.findOne({_id: insertionInfo.insertedId});
 
     return newComment; 
@@ -42,6 +44,8 @@ const exportedMethods = {
     const comment = await commentCollection.findOneAndDelete({_id: id});
 
     if(!comment) throw Error('Deletion Failed');
+
+    //TODO: Need to update user record and event record to remove id of comment
 
     return comment;
   },

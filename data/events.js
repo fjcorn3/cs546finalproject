@@ -24,6 +24,9 @@ const exportedMethods = {
   async addEvent(event) {
     if(!validEvent(event)) throw Error('Invalid Event');
 
+    event.comments = [];
+    event.attendees = [];
+
     const eventCollection = await events();
     const insertionInfo = await eventCollection.insertOne(event);
 
@@ -42,6 +45,9 @@ const exportedMethods = {
     const event = await eventCollection.findOneAndDelete({_id: id});
 
     if(!event) throw Error('Deletion Failed');
+    
+    //TODO: need to remove comments on post from comment and user collections
+    //TODO: need to remove event from attended events in user collections
 
     return event;
   },

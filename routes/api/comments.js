@@ -71,4 +71,18 @@ router.patch('/:commentId', async (req, res) => {
   }
 });
 
+router.delete('/:commentId', async (req, res) => {
+  const commentId = req.params.commentId;
+
+  if(!ObjectId.isValid(commentId)) res.status(400).json({error: 'Invalid Id'});
+
+  try {
+    const comment = await commentData.removeComment(commentId);
+    res.json(comment);
+  }
+  catch(e) {
+    res.status(404).json({Error: "Event Not Found"});
+  }
+});
+
 export default router;

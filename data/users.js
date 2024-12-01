@@ -26,6 +26,9 @@ let exportedMethods = {
     if(!validUser(user)) throw Error('Invalid User');
 
     user.password = await bcrypt.hash(user.password, 10);
+    user.eventsAttended = [];
+    user.eventsFavorited = [];
+    user.comments = [];
 
     const userCollection = await users();
     const insertionInfo = await userCollection.insertOne(user);
@@ -45,6 +48,9 @@ let exportedMethods = {
     const user = await userCollection.findOneAndDelete({_id: id});
 
     if(!user) throw Error('Deletion Failed');
+    
+    //TODO: remove comments from comment and event collections
+    //TODO: remove user from attendees in event collection
 
     return user;
   },

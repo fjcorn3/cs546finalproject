@@ -70,4 +70,19 @@ router.patch('/:userId', async (req, res) => {
     res.status(404).json({error: 'User Not Found'});
   }
 });
+
+router.delete('/:userId', async (req, res) => {
+  const userId = req.params.userId;
+
+  if(!ObjectId.isValid(userId)) res.status(400).json({error: 'Invalid Id'});
+
+  try {
+    const user = await userData.removeUser(userId);
+    res.json(user);
+  }
+  catch(e) {
+    res.status(404).json({Error: "User Not Found"});
+  }
+});
+
 export default router;
