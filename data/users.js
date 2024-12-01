@@ -1,8 +1,8 @@
-import {users} from '../config/mongoCollections.js';
-import {ObjectId} from 'mongodb';
+import { users } from '../config/mongoCollections.js';
+import { ObjectId } from 'mongodb';
+import bcrypt from 'bcryptjs';
 
 let exportedMethods = {
-
   async getAllUsers() {
     const userCollection = await users();
     const userList = await userCollection.find({}).toArray();
@@ -10,27 +10,53 @@ let exportedMethods = {
   },
 
   async getUserById(id) {
+    if(!id || !ObjectId.isValid(id)) throw Error('Invalid Object Id');
+    id = ObjectId(id);
+
     const userCollection = await users();
-    const user = await userCollection.findOne({_id: new ObjectId(id)});
-    if (!user) throw 'Error: User not found';
+    const user = await userCollection.findOne({_id: id});
+    
+    if(!user) throw Error('User Not Found');
     return user;
   },
 
-  async addUser(firstName, lastName) {
-    //TODO
+  async addUser(user) {
+    const userCollection = await users();
+    const insertionInfo = userCollection.insertOne(user);
+
+    if(!insertionInfo.acknowledged) throw Error('Insertion Failed');
+    
+    return insertionInfo.insertedId;
   },
   
   async removeUser(id) {
-    //TODO
+    if(!id || !ObjectId.isValid(id)) throw Error('Invalid Object Id');
+    id = ObjectId(id);
+
+    const userCollection = await users();
+    const user = await userCollection.findOneAndDelete({_id: id});
+
+    if(!user) throw Error('Deletion Failed');
+
+    return user;
   },
 
-  async updateUserPut(id, firstName, lastName) {
-    //TODO
-  },
+  async updateUser(id, fields) {
+    if(!id || !ObjectId.isValid(id)) throw Error('Invalid Object Id');
+    id = ObjectId(id);
 
-  async updateUserPatch(id, userInfo) {
-    //TODO
+    const userCollection = await users();
+    const user = await userCollection.findOneAndReplace(
+      {_id: id},
+      fields,
+      {returnDocument: 'after'}
+    );
+
+    if(!user) throw Error('Update Failed');
+
+    return user;
   }
+
 };
 
 export default exportedMethods;
