@@ -19,8 +19,8 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   let user = req.body;
 
-  if (!user || Object.keys(user).length === 0) {
-    res.status(400).json({error: 'There are no fields in the request body'});
+  if(!user || Object.keys(user).length === 0) {
+    return res.status(400).json({error: 'There are no fields in the request body'});
   }
   
   if(!validUser(user)) res.status(400).json({error: 'Invalid User'});
@@ -57,7 +57,7 @@ router.patch('/:userId', async (req, res) => {
   if(!ObjectId.isValid(userId)) res.status(401).json({error: 'Invalid Id'});
 
   if (!updateFields || Object.keys(updateFields).length === 0 || !validUserFields(updateFields)) {
-    res.status(400).json({error: 'Missing fields in the request body'});
+    return res.status(400).json({error: 'Missing fields in the request body'});
   }
 
   updateFields = Object.fromEntries(Object.entries(updateFields).map(([key, val]) => [key, xss(val)]));

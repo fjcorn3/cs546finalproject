@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 
+// For validating required fields when creating user 
 export const validUser = (user) => {
   if(!user.name || typeof user.name !== 'string' || user.name.trim().length === 0) return false;
   if(!user.email || typeof user.email !== 'string' || user.email.trim().length === 0) return false;
@@ -11,6 +12,7 @@ export const validUser = (user) => {
   return true;
 };
 
+// For validating fields when updating user 
 export const validUserFields = (user) => {
   if(user.name && (typeof user.name !== 'string' || user.name.trim().length === 0)) return false;
   if(user.email && (typeof user.email !== 'string' || user.email.trim().length === 0)) return false;
@@ -28,7 +30,7 @@ export const validEvent = (event) => {
   if(!event.description || typeof event.description !== 'string' || event.description.trim().length === 0) return false;
   if(!event.price || typeof event.price !== 'number' || event.price < 0) return false;
   if(!event.familyFriendly|| typeof event.familyFriendly !== 'boolean') return false;
-  if(!event.tags || !Array.isArray(event.tags) || event.tags.any((tag) => typeof tag !== 'string')) return false;
+  if(!event.tags || !Array.isArray(event.tags) || event.tags.some((tag) => typeof tag !== 'string')) return false;
 
   return true;
 };
@@ -39,7 +41,7 @@ export const validEventFields = (event) => {
   if(event.description && (typeof event.description !== 'string' || event.description.trim().length === 0)) return false;
   if(event.price && (typeof event.price !== 'number' || event.price < 0)) return false;
   if(event.familyFriendly && (typeof event.familyFriendly !== 'boolean')) return false;
-  if(event.tags && (!Array.isArray(event.tags) || event.tags.any((tag) => typeof tag !== 'string'))) return false;
+  if(event.tags && (!Array.isArray(event.tags) || event.tags.some((tag) => typeof tag !== 'string'))) return false;
 
   return true;
 };

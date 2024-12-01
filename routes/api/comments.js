@@ -1,4 +1,3 @@
-
 import { Router } from 'express';
 import { ObjectId } from 'mongodb';
 import { validComment, validCommentFields } from '../../validation.js';
@@ -20,8 +19,8 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   let comment = req.body;
 
-  if (!comment || Object.keys(comment).length === 0 || !validComment(comment)) {
-    res.status(400).json({error: 'Missing fields in request body'});
+  if(!comment || Object.keys(comment).length === 0 || !validComment(comment)) {
+    return res.status(400).json({error: 'Missing fields in request body'});
   }
 
   comment = Object.fromEntries(Object.entries(comment).map(([key, val]) => [key, xss(val)]));
@@ -57,7 +56,7 @@ router.patch('/:commentId', async (req, res) => {
   if(!ObjectId.isValid(commentId)) res.status(400).json({error: 'Invalid Id'});
 
   if (!updateFields || Object.keys(updateFields).length === 0 || !validCommentFields(updateFields)) {
-    res.status(400).json({error: 'Missing fields in the request body'});
+    return res.status(400).json({error: 'Missing fields in the request body'});
   }
 
   updateFields = Object.fromEntries(Object.entries(updateFields).map(([key, val]) => [key, xss(val)]));

@@ -19,8 +19,8 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   let event = req.body;
 
-  if (!event || Object.keys(event).length === 0 || !validEvent(event)) {
-    res.status(400).json({error: 'Missing fields in request body'});
+  if(!event || Object.keys(event).length === 0 || !validEvent(event)) {
+    return res.status(400).json({error: 'Missing fields in request body'});
   }
 
   event = Object.fromEntries(Object.entries(event).map(([key, val]) => [key, xss(val)]));
@@ -56,7 +56,7 @@ router.patch('/:eventId', async (req, res) => {
   if(!ObjectId.isValid(eventId)) res.status(400).json({error: 'Invalid Id'});
 
   if (!updateFields || Object.keys(updateFields).length === 0 || !validEventFields(updateFields)) {
-    res.status(400).json({error: 'Missing fields in the request body'});
+    return res.status(400).json({error: 'Missing fields in the request body'});
   }
 
   updateFields = Object.fromEntries(Object.entries(updateFields).map(([key, val]) => [key, xss(val)]));

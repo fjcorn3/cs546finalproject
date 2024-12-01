@@ -1,6 +1,5 @@
 CS546 Final Project
 
-
 DB schema:
 
 users {
@@ -27,6 +26,7 @@ events {
   description: string,
   price: number,
   familyFriendly: boolean,
+  likes: number,
   tags: Array,
   comments: Array,
   attendees: Array

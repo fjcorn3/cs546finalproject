@@ -26,6 +26,7 @@ const exportedMethods = {
 
     event.comments = [];
     event.attendees = [];
+    event.likes = [];
 
     const eventCollection = await events();
     const insertionInfo = await eventCollection.insertOne(event);
