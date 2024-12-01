@@ -24,7 +24,7 @@ router.post('/', (req, res) => {
   if(!validUser(user)) res.status(400).json({error: 'Invalid User'});
 
   try {
-    const id = userData.addUser(user);
+    const id = await userData.addUser(user);
     res.json({id: id});
   }
   catch(e) {

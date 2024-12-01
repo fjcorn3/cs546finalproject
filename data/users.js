@@ -21,6 +21,10 @@ let exportedMethods = {
   },
 
   async addUser(user) {
+    if(!validUser(user)) throw Error('Invalid User');
+
+    user.password = await bcrypt.hash(user.password, 10);
+
     const userCollection = await users();
     const insertionInfo = userCollection.insertOne(user);
 
