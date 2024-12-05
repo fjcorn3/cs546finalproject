@@ -7,7 +7,8 @@
 </head>
 <body>
     <h1>Sign Up</h1>
-    <form method="POST" id="myForm">
+    <div id="errorUp" class="errorUp" hidden></div>
+    <form method="POST" id="signup-form">
         <label id="formLabel" for="fullName"> Full Name: </label>
         <input type="text" name="fullName" id="fullName" />
         <label id="formLabel" for="typeOfUser"> Type of User: </label>
@@ -17,6 +18,10 @@
           </select>
         <label id="formLabel" for="age"> Age: </label>
         <input type="text" name="age" id="age" />
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email">
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" name="phone">
         <label id="formLabel" for="username"> Create Username: </label>
         <input type="text" name="username" id="username" />
         <label id="formLabel" for="password"> Create Password: </label>

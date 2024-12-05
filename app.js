@@ -1,6 +1,8 @@
 import express from 'express';
 const app = express();
+import session from 'express-session';
 import configRoutes from './routes/index.js';
+import { logRequest } from './middleware.js';
 
 const rewriteUnsupportedBrowserMethods = (req, res, next) => {
     if (req.body && req.body._method) {
@@ -15,6 +17,17 @@ app.use('/public', express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(rewriteUnsupportedBrowserMethods);
+
+app.use(
+  session({
+    name: 'AuthenticationState',
+    secret: 'some secret string!',
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+app.use(logRequest);
 
 configRoutes(app);
 
