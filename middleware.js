@@ -10,7 +10,7 @@ const logRequest = (req, res, next) => {
       if (req.session.user) {
         return req.session.user.role === 'admin' ? res.redirect('/administrator') : res.redirect('/user');
       } else {
-        return res.redirect('/signinuser');
+        return res.redirect('/signin');
       }
     }
     next();
@@ -32,14 +32,14 @@ const signupRedirect = (req, res, next) => {
 
 const authenticateUser = (req, res, next) => {
     if (!req.session.user) {
-      return res.redirect('/signinuser');
+      return res.redirect('/signin');
     }
     next();
 };
 
 const authenticateAdmin = (req, res, next) => {
     if (!req.session.user) {
-      return res.redirect('/signinuser');
+      return res.redirect('/signin');
     }
     if (req.session.user.role !== 'admin') {
       return res.status(403).render('error', {
@@ -53,7 +53,7 @@ const authenticateAdmin = (req, res, next) => {
 
 const allowSignOut = (req, res, next) => {
     if (!req.session.user) {
-      return res.redirect('/signinuser');
+      return res.redirect('/signin');
     }
     next();
 };

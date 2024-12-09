@@ -8,14 +8,14 @@
 <body>
     <h1>Sign In</h1>
     <div id="errorIn" class="errorIn" hidden></div>
-    <form method="POST" id="signin-form">
+    <form action="/signinuser" method="POST" id="signin-form">
         <label id="formLabel" for="username"> Enter Username: </label>
         <input type="text" name="username" id="username" />
         <label id="formLabel" for="password"> Enter Password: </label>
         <input type="text" name="password" id="password" />
         <button type="submit">Sign In</button>
     </form>
-    <a href="./"><button>Back to Home Page.</button></a>
+    <a href="homepage.html"><button>Back to Home Page.</button></a>
     <script src="/public/js/main.js"></script>
 </body>
 </html>

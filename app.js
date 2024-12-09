@@ -3,6 +3,10 @@ const app = express();
 import session from 'express-session';
 import configRoutes from './routes/index.js';
 import { logRequest } from './middleware.js';
+import {dbConnection, closeConnection} from './config/mongoConnection.js';
+
+const db = await dbConnection();
+await db.dropDatabase();
 
 const rewriteUnsupportedBrowserMethods = (req, res, next) => {
     if (req.body && req.body._method) {
