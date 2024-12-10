@@ -1,21 +1,25 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In</title>
-    <link rel="stylesheet" href="/public/css/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSVP Form</title>
+  <link rel="stylesheet" href="/public/css/main.css">
 </head>
 <body>
-    <h1>Sign In</h1>
-    <div id="errorRsvp" class="errorRsvp" hidden></div>
-    <form method="POST" id="rsvpForm">
-        <label id="formLabel" for="fullName"> Enter Full Name: </label>
-        <input type="text" name="fullName" id="fullName" />
-        <label id="formLabel" for="email"> Enter Email Address: </label>
-        <input type="email" name="email" id="email" />
-        <a href="./eventPage"><button>RSVP</button></a>
-        <script src="/public/js/main.js"></script>
-    </form>
-<!-- the submit button shoud lead back to the event page and headcount on post should be incremented -->
+  <h1>RSVP</h1>
+  <form id="rsvpForm" action="/rsvp" method="POST">
+    <label for="firstName">First Name:</label>
+    <input type="text" id="firstName" name="firstName">
+
+    <label for="lastName">Last Name:</label>
+    <input type="text" id="lastName" name="lastName">
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email">
+
+    <button type="submit">RSVP</button>
+  </form>
+  <script src="/public/js/main.js"></script>
 </body>
 </html>

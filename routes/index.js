@@ -1,12 +1,18 @@
-import projectRoutes from './home.js';
-import apiRouter from './api/index.js'
+import express from 'express';
+import path from 'path';
+import userRoutes from './userRoutes.js';
+import attendeePostsRoutes from './attendeePostsRoutes.js';
+import organizerPostsRoutes from './organizerPostsRoutes.js';
 
-const constructorMethod = (app) => {
-  app.use('/api', apiRouter);
-  app.use('/', projectRoutes);
-  app.use('*', (req, res) => {
-    res.status(404).json({error: 'Route Not found'});
-  });
-};
+const router = express.Router();
+const __dirname = path.resolve();
 
-export default constructorMethod;
+router.use('/', userRoutes);
+router.use('/posts', attendeePostsRoutes);
+router.use('/events', organizerPostsRoutes);
+
+router.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'static/homePage.html'));
+});
+
+export default router;

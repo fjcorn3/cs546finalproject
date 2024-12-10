@@ -1,40 +1,36 @@
 import express from 'express';
-const app = express();
 import session from 'express-session';
-import configRoutes from './routes/index.js';
-import { logRequest } from './middleware.js';
-import {dbConnection, closeConnection} from './config/mongoConnection.js';
+import path from 'path';
+import routes from './routes/index.js';  // Ensure this points to the correct route file
+import { logRequest } from './middleware.js'; // Ensure middleware is properly imported
 
-const db = await dbConnection();
-await db.dropDatabase();
+const app = express();
+const __dirname = path.resolve();
 
-const rewriteUnsupportedBrowserMethods = (req, res, next) => {
-    if (req.body && req.body._method) {
-      req.method = req.body._method;
-      delete req.body._method;
-    }
-  
-    next();
-  };
-  
-app.use('/public', express.static('public'));
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
-app.use(rewriteUnsupportedBrowserMethods);
+app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
-    name: 'AuthenticationState',
-    secret: 'some secret string!',
+    name: 'AuthCookie',
+    secret: 'superSecretKey',
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
   })
 );
 
 app.use(logRequest);
 
-configRoutes(app);
+app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/static', express.static(path.join(__dirname, 'static')));
+
+app.use('/', routes);
+
+app.use((req, res, next) => {
+  res.status(404).sendFile(path.join(__dirname, 'static/404.html'));
+});
 
 app.listen(3000, () => {
-  console.log('Server is up on http://localhost:3000');
+  console.log("We've now got a server!");
+  console.log('Your routes will be running on http://localhost:3000');
 });

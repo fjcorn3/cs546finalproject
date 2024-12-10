@@ -1,8 +1,7 @@
-const signupForm = document.getElementById('signup-form');
-const signinForm = document.getElementById('signin-form');
-let errorMsgUp = document.getElementById('errorUp');
-let errorMsgIn = document.getElementById('errorIn');
-
+const signupForm = document.getElementById('signupForm');
+const signinForm = document.getElementById('signinForm');
+let errorMsg = document.getElementById('error-message');
+  
 const validatePassword = (password) => {
     const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$/;
     return regex.test(password);
@@ -10,95 +9,86 @@ const validatePassword = (password) => {
   
 if (signupForm) {
     signupForm.addEventListener('submit', (e) => {
-    const fullName = document.getElementById('fullName').value.trim();
-    const age = document.getElementById('age').value.trim();
-    const email = document.getElementById('email').value;
-    const phone = document.getElementById('phone').value;
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
     const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phoneNumber = document.getElementById('phoneNumber').value.trim();
+    const age = document.getElementById('age').value.trim();
   
-    if (!fullName || fullName.split(/\s+/).length < 2) {
-        errorMsgUp.innerHTML = 'Please enter your full name (at least two words).';
-    }
-
-    if (!/^[a-zA-Z\s]+$/.test(fullName)) {
-        errorMsgUp.innerHTML = 'Full name should only contain letters and spaces.';
+    if (!firstName || firstName.length < 2 || firstName.length > 25) {
+        errorMsg.innerHTML = 'First name must be between 2 and 25 characters.\n';
     }
   
     if (!lastName || lastName.length < 2 || lastName.length > 25) {
-        errorMsgUp.innerHTML = 'Last name must be between 2 and 25 characters.';
-    }
-
-    if (!age || isNaN(Number(age)) || Number(age) < 0) {
-        errorMsgUp.innerHTML = 'Age must be a number greater than 0.';
-    }
-
-    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
-        errorMsgUp.innerHTML = 'Please enter a valid email address.';
-    }
-
-    if (!/^(?:\(\d{3}\)\s?|\d{3}[-.\s]?)\d{3}[-.\s]?\d{4}$/.test(phone)) {
-        errorMsgUp.innerHTML = 'Please enter a valid phone number.';
+        errorMsg.innerHTML = 'Last name must be between 2 and 25 characters.\n';
     }
   
     if (!username || username.length < 5 || username.length > 10) {
-        errorMsgUp.innerHTML = 'User ID must be between 5 and 10 characters.';
+        errorMsg.innerHTML = 'Username must be between 5 and 10 characters.\n';
     }
   
     if (!validatePassword(password)) {
-        errorMsgUp.innerHTML = 'Password must have at least one uppercase letter, one number, and one special character.\n';
+        errorMsg.innerHTML = 'Password must have at least one uppercase letter, one number, and one special character.\n';
     }
+  
+    if (!/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)) {
+        errorMsg.innerHTML = 'Email must be a valid email address.\n';
+    }
+  
+    if (!/^[0-9]{10}$/.test(phoneNumber)) {
+        errorMsg.innerHTML = 'Phone number must be a valid 10-digit number.\n';
+    }
+  
+    if (typeof Number(age) !== 'number' || Number(age) < 18) {
+        errorMsg.innerHTML = 'Age must be a number and at least 18 years old.\n';
+    }
+  
     });
 }
   
 if (signinForm) {
     signinForm.addEventListener('submit', (e) => {
-    const userId = document.getElementById('username').value.trim();
+    const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value.trim();
   
-    if (!userId || userId.length < 5 || userId.length > 10) {
-        errorMsgIn.innerHTML = 'User ID must be between 5 and 10 characters.\n';
+    if (!username || username.length < 5 || username.length > 10) {
+        errorMsg.innerHTML = 'User ID must be between 5 and 10 characters.\n';
     }
   
     if (!validatePassword(password)) {
-        errorMsgIn.innerHTML = 'Password must have at least one uppercase letter, one number, and one special character.\n';
-    }
-    });
-}
-  
-const rsvpForm = document.getElementById('rsvpForm');
-const errorRsvp = document.getElementById('errorRsvp');
-if (rsvpForm) {
-    rsvpForm.addEventListener('submit', (e) => {
-    const fullName = document.getElementById('fullName').value.trim();
-    const email = document.getElementById('email').value.trim();
-  
-    if (!fullName || fullName.split(/\s+/).length < 2) {
-        errorMsgUp.innerHTML = 'Please enter your full name (at least two words).';
-    }
-
-    if (!/^[a-zA-Z\s]+$/.test(fullName)) {
-        errorMsgUp.innerHTML = 'Full name should only contain letters and spaces.';
-    }
-  
-    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
-        errorMsgUp.innerHTML = 'Please enter a valid email address.';
+        errorMsg.innerHTML = 'Password must have at least one uppercase letter, one number, and one special character.\n';
     }
     });
 }
 
-const createPostForm = document.getElementById('createPostForm');
-const errorPost = document.getElementById('errorPost');
-if (createPostForm) {
-    createPostForm.addEventListener('submit', (e) => {
-
-    })
-}
-
-const createPostAttendeeForm = document.getElementById('createPostAttendeeForm');
-const errorPostAttendee = document.getElementById('errorPostAttendee');
-if (createPostAttendeeForm) {
-    createPostAttendeeForm.addEventListener('submit', (e) => {
-        
-    })
-}
+    const eventsList = document.getElementById('eventsList');
+    if (eventsList) {
+      fetch('/events')
+        .then((response) => {
+          if (!response.ok) throw new Error('Failed to fetch events.');
+          return response.json();
+        })
+        .then((events) => {
+          events.forEach((event) => {
+            const eventDiv = document.createElement('div');
+            eventDiv.classList.add('event');
+  
+            eventDiv.innerHTML = `
+              <h3>${event.description}</h3>
+              <p>Location: ${event.location || 'N/A'}</p>
+              <p>Date: ${event.date || 'N/A'} Time: ${event.time || 'N/A'}</p>
+              <p>Head Count: ${event.headCount || 'N/A'}</p>
+              <button onclick="handleRSVP('${event._id}')">RSVP</button>
+            `;
+  
+            eventsList.appendChild(eventDiv);
+          });
+        })
+        .catch((error) => {
+          console.error(error.message);
+          eventsList.innerHTML = '<p>Failed to load events. Please try again later.</p>';
+        });
+    }
+  

@@ -1,34 +1,45 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
-    <link rel="stylesheet" href="/public/css/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="/public/css/main.css">
 </head>
 <body>
-    <h1>Sign Up</h1>
-    <div id="errorUp" class="errorUp" hidden></div>
-    <form method="POST" id="signup-form">
-        <label id="formLabel" for="fullName"> Full Name: </label>
-        <input type="text" name="fullName" id="fullName" />
-        <label id="formLabel" for="typeOfUser"> Type of User: </label>
-        <select name="typeOfUser" id="typeOfUser">
-            <option value="organizer">Organizer</option>
-            <option value="attendee">Attendee</option>
-          </select>
-        <label id="formLabel" for="age"> Age: </label>
-        <input type="text" name="age" id="age" />
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email">
-        <label for="phone">Phone Number:</label>
-        <input type="tel" id="phone" name="phone">
-        <label id="formLabel" for="username"> Create Username: </label>
-        <input type="text" name="username" id="username" />
-        <label id="formLabel" for="password"> Create Password: </label>
-        <input type="text" name="password" id="password" />
-        <button type="submit">Sign In</button>
-    </form>
-    <a href="./"><button>Back to Home Page.</button></a>
-    <script src="/public/js/main.js"></script>
+  <div id="error-message" class="error-message" hidden></div>
+  <h1>Sign Up</h1>
+  <form method="POST" id="signupForm">
+    <label for="firstName">First Name:</label>
+    <input type="text" id="firstName" name="firstName">
+    
+    <label for="lastName">Last Name:</label>
+    <input type="text" id="lastName" name="lastName">
+    
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username">
+    
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email">
+    
+    <label for="role">Role:</label>
+    <select id="role" name="role">
+      <option value="organizer">organizer</option>
+      <option value="attendee">attendee</option>
+    </select>
+    
+    <label for="phoneNumber">Phone Number:</label>
+    <input type="tel" id="phoneNumber" name="phoneNumber">
+    
+    <label for="age">Age:</label>
+    <input type="number" id="age" name="age">
+    
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password">
+    
+    <button type="submit">Sign Up</button>
+  </form>
+  <a href="/signin">Already have an account? Sign in here!</a>
+  <a href="/">Go Back to Home</a>
 </body>
 </html>

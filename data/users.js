@@ -1,199 +1,164 @@
 import { users } from '../config/mongoCollections.js';
-import { ObjectId } from 'mongodb';
-import { validUser, validUserFields } from '../validation.js';
-
 import bcrypt from 'bcryptjs';
 
 const saltRounds = 16;
 
-let exportedMethods = {
-  async getAllUsers() {
-    const userCollection = await users();
-    const userList = await userCollection.find({}).toArray();
-    return userList;
-  },
-
-  async getUserById(id) {
-    if(!id || !ObjectId.isValid(id)) throw Error('Invalid Object Id');
-    id = ObjectId(id);
-
-    const userCollection = await users();
-    const user = await userCollection.findOne({_id: id});
-    
-    if(!user) throw Error('User Not Found');
-    return user;
-  },
-
-  async addUser(user) {
-    if(!validUser(user)) throw Error('Invalid User');
-
-    user.password = await bcrypt.hash(user.password, 10);
-    user.eventsAttended = [];
-    user.eventsFavorited = [];
-    user.comments = [];
-
-    const userCollection = await users();
-    const insertionInfo = await userCollection.insertOne(user);
-
-    if(!insertionInfo.acknowledged) throw Error('Insertion Failed');
-  
-    const newUser = await userCollection.findOne({_id: insertionInfo.insertedId});
-    
-    return newUser;
-  },
-  
-  async removeUser(id) {
-    if(!id || !ObjectId.isValid(id)) throw Error('Invalid Object Id');
-    id = ObjectId(id);
-
-    const userCollection = await users();
-    const user = await userCollection.findOneAndDelete({_id: id});
-
-    if(!user) throw Error('Deletion Failed');
-    
-    //TODO: remove comments from comment and event collections
-    //TODO: remove user from attendees in event collection
-
-    return user;
-  },
-
-  async updateUser(id, fields) {
-    if(!id || !ObjectId.isValid(id)) throw Error('Invalid Object Id');
-    id = ObjectId(id);
-
-    if(!validUserFields(fields)) throw Error('Invalid fields for User');
-
-    const userCollection = await users();
-    const user = await userCollection.findOneAndReplace(
-      {_id: id},
-      fields,
-      {returnDocument: 'after'}
-    );
-
-    if(!user) throw Error('Update Failed');
-
-    return user;
-  },
-
-  async signInUser(username, password) {
-    if(!username || !password) throw "invalid params";
-
-  if(typeof username !== 'string') throw "improper paramater type";
-  username = username.trim().toLowerCase();
-  if(username.length < 5) throw "short string";
-  if(username.length > 15) throw "long string";
-
-  if(typeof password !== 'string') throw "improper paramater type";
-  password = password.trim();
-  if(password.includes(" ")) throw "space in password";
-  if(password.length < 8) throw "short password";
-  if(!(/\d/.test(password))) throw "include number in password";
-  if(!(/[A-Z]/.test(password))) throw "include uppercase in password";
-  if(!(/[^a-zA-Z0-9]/.test(password))) throw "include special character in password";
-
-  const usersCollection = await users();
-
-  const found = await usersCollection.findOne({username: username});
-
-  if(!found) throw "Either the userId or password is invalid";
-
-  const match = await bcrypt.compare(password, found.password);
-
-  if(!match) throw "Either the userId or password is invalid";
-  
-
-  let userInfo = {
-    username: found.username,
-    firstName: found.firstName,
-    lastName: found.lastName,
-    email: found.email,
-    role: found.role,
-    phoneNumber: found.phoneNumber,
-    age: found.age,
-    posts: found.posts,
-    favorites: found.favorites
-  };
-
-  return userInfo;
-},
-
-//NEED TO VALIDATE ALL INPUTS FOR THISS
-async signUpUser(
-  firstName,
-  lastName,
-  username,
-  password,
-  email,
-  phoneNumber,
-  age,
-  role
-){
-  if(!firstName || !lastName || !username || !password || !email || !phoneNumber || !role || !age) throw "missing an input param";
-  if(typeof firstName !== 'string') throw "improper paramater type";
-  if(typeof lastName !== 'string') throw "improper paramater type";
-
-  if((/\d/.test(firstName))) throw "number in first name";
-  if((/\d/.test(lastName))) throw "number in last name";
-
-  firstName = firstName.trim();
-  lastName = lastName.trim();
-
-  if(firstName.length < 2) throw "short string";
-  if(lastName.length < 2) throw "short string";
-
-  if(firstName.length > 25) throw "long string";
-  if(lastName.length > 25) throw "long string";
-
-  if(typeof username !== 'string') throw "improper paramater type";
-  if((/\d/.test(username))) throw "number in username";
-  username = username.trim().toLowerCase();
-  if(username.length < 5) throw "short string";
-  if(username.length > 10) throw "long string";
-
-  if(typeof password !== 'string') throw "improper paramater type";
-  password = password.trim();
-  if(password.includes(" ")) throw "space in password";
-  if(password.length < 8) throw "short password";
-  if(!(/\d/.test(password))) throw "include number in password";
-  if(!(/[A-Z]/.test(password))) throw "include uppercase in password";
-  if(!(/[^a-zA-Z0-9]/.test(password))) throw "include special character in password";
-
-  if(typeof role !== 'string') throw "invalid parameter";
-  role = role.trim().toLowerCase();
-  if(role !== "organizer" && role !== "attendee") throw "role must be admin or user";
-
-
-  const hash = await bcrypt.hash(password, saltRounds);
-
-  const usersCollection = await users();
-
-  const found = await usersCollection.findOne({username: username});
-
-  if(found) throw "username already exists";
-
-
-  const user = {
-    username: username,
-    firstName: firstName,
-    lastName: lastName,
-    password: hash,
-    email: email,
-    role: role,
-    phoneNumber: phoneNumber,
-    age: age,
-    posts: [],
-    favorites: []
+const createUser = async (firstName, lastName, username, email, role, phoneNumber, age, password) => {
+  if (!firstName) {
+    throw new Error("You must provide a first name.");
   }
-
-  const inserting = await usersCollection.insertOne(user);
-
-  if(!inserting.acknowledged || !inserting.insertedId) throw "could not add user";
-
-  const ans = True;
-
-  return ans;
-
-}
+  if (!lastName) {
+    throw new Error("You must provide a last name.");
+  }
+  if (!username) {
+    throw new Error("You must provide a username.");
+  }
+  if (!password) {
+    throw new Error("You must provide a password.");
+  }
+  if (!age) {
+    throw new Error("You must provide an age.");
+  }
+  if (!phoneNumber) {
+    throw new Error("You must provide a phone number.");
+  }
+  if (!role) {
+    throw new Error("You must provide a role.");
+  }
+  if (!email) {
+    throw new Error("You must provide an email.");
+  }
+  if (typeof firstName !== "string") {
+    throw new Error("First name must be of type string.");
+  }
+  if (typeof lastName !== "string") {
+    throw new Error("Last name must be of type string.");
+  }
+  if (typeof username !== "string") {
+    throw new Error("Username must be of type string.");
+  }
+  if (typeof password !== "string") {
+    throw new Error("Password must be of type string.");
+  }
+  if (typeof email !== "string") {
+    throw new Error("Email must be of type string.");
+  }
+  if (typeof phoneNumber !== "string") {
+    throw new Error("Phone number must be of type string.");
+  }
+  if (typeof Number(age) !== "number") {
+    throw new Error("Age must be of type number.");
+  }
+  if (role.trim().toLowerCase() !== "attendee" && role.trim().toLowerCase() !== "organizer") {
+    throw new Error("Role must be either attendee or organizer.");
+  }
+  firstName = firstName.trim()
+  lastName = lastName.trim();
+  username = username.trim();
+  password = password.trim();
+  email = email.trim();
+  role = role.trim().toLowerCase();
+  if (!/^[A-Za-z]+$/.test(firstName) || firstName.length < 2 || firstName.length > 25){
+    throw new Error("First name should be only letters and has to be no less than 2 characters and no more than 25.");
+  }
+  if (!/^[A-Za-z]+$/.test(lastName) || lastName.length < 2 || lastName.length > 25){
+    throw new Error("Last name should be only letters and has to be no less than 2 characters and no more than 25.");
+  }
+  if (!/^[A-Za-z]+$/.test(username) || username.length < 5 || username.length > 10){
+    throw new Error("Username should be only letters and has to be no less than 5 characters and no more than 10.");
+  }
+  if (!/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)){
+    throw new Error("Email must be a valid email address.");
+  }
+  if (!/^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/.test(phoneNumber)){
+    throw new Error("Phone number must be valid.");
+  }
+  if (password.length < 8){
+    throw new Error("Password must by at least 8 characters long.");
+  }
+  if (!/[A-Z]/.test(password)){
+    throw new Error("Password must have at least one uppercase letter.");
+  }
+  if (!/\d/.test(password)){
+    throw new Error("Password must have at least one number.");
+  }
+  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)){
+    throw new Error("Password must have at least one special character.");
+  }
+  const hashPassword = await bcrypt.hash(password, saltRounds);
+  const newUser = {
+    firstName,
+    lastName,
+    username,
+    email,
+    role,
+    phoneNumber,
+    age,
+    password: hashPassword,
+    posts: [],
+    favorites: [],
+  };
+  const userCollection = await users();
+  const user = await userCollection.findOne({ username: username });
+  if (user){
+    throw new Error("You are already a user, you can't sign up.");
+  }
+  const insertInfo = await userCollection.insertOne(newUser);
+  if (!insertInfo.acknowledged || !insertInfo.insertedId) {
+    throw new Error('Could not add user');
+  }
+  return {registrationCompleted: true};
 };
 
-export default exportedMethods;
+const getUserById = async (username, password) => {
+  if (!username) {
+    throw new Error("You must provide a user ID.");
+  }
+  if (!password) {
+    throw new Error("You must provide a password.");
+  }
+  if (typeof username !== "string") {
+    throw new Error("User ID must be of type string.");
+  }
+  if (typeof password !== "string") {
+    throw new Error("Password must be of type string.");
+  }
+  username = username.trim();
+  password = password.trim();
+  if (!/^[A-Za-z]+$/.test(username) || username.length < 5 || username.length > 10){
+    throw new Error("User ID should be only letters and has to be no less than 5 characters and no more than 10.");
+  }
+  if (password.length < 8){
+    throw new Error("Password must by at least 8 characters long.");
+  }
+  if (!/[A-Z]/.test(password)){
+    throw new Error("Password must have at least one uppercase letter.");
+  }
+  if (!/\d/.test(password)){
+    throw new Error("Password must have at least one number.");
+  }
+  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)){
+    throw new Error("Password must have at least one special character.");
+  }
+  const userCollection = await users();
+  const user = await userCollection.findOne({ username: username });
+  if (!user) {
+    throw new Error("Either the username or password is invalid.");
+  }
+  let comparePasswords = await bcrypt.compare(password, user.password);
+  if (!comparePasswords){
+    throw new Error("Either the username or password is invalid.");
+  }
+  
+  return {
+    firstName: user.firstName,
+    lastName: user.lastName,
+    username: user.username,
+    age: user.age,
+    phoneNumber: user.phoneNumber,
+    email: user.email,
+    role: user.role
+  }
+};
+
+export { createUser, getUserById };

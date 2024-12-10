@@ -1,30 +1,41 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Post</title>
-    <link rel="stylesheet" href="/public/css/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Event</title>
+  <link rel="stylesheet" href="/public/css/main.css">
 </head>
 <body>
-    <h1>Create Post</h1>
-    <div id="errorPost" class="errorPost" hidden></div>
-    <form method="POST" id="createPostForm">
-        <label id="formLabel" for="postImage"> Upload Photo: </label>
-        <input type="file" name="postimage" id="postimage" />
-        <label id="formLabel" for="description"> Enter Description: </label>
-        <input type="text" name="description" id="description" />
-        <!-- headcount should be isnitailed to zero and put as part of the post onece the post is uploaded -->
-        <div id="headCount"></div>
-        <label id="formLabel" for="date"> Enter Date: </label>
-        <input type="date" name="date" id="date" />
-        <label id="formLabel" for="time"> Enter Time: </label>
-        <input type="text" name="time" id="time" />
-        <label id="formLabel" for="RSVP"> Add An RSVP Form: </label>
-        <input type="radio" name="RSVP" id="RSVP" value="Y"/>
-        <input type="radio" name="RSVP" id="RSVP" value="N"/>
-        <!-- If they decided to have an rsvp button shoudl be factored in when making a psot in the script -->
-        <a href="./eventPage"><button>Create</button></a>
-    </form>
-    <script src="/public/js/main.js"></script>
+  <h1>Create Event</h1>
+  <form id="createEventForm" method="POST">
+    <label for="description">Description:</label>
+    <textarea id="description" name="description"></textarea>
+
+    <label for="photo">Photo URL:</label>
+    <input type="text" id="photo" name="photo">
+
+    <label for="headCount">Head Count:</label>
+    <input type="number" id="headCount" name="headCount">
+
+    <label for="time">Time:</label>
+    <input type="time" id="time" name="time">
+
+    <label for="date">Date:</label>
+    <input type="date" id="date" name="date">
+
+    <label for="location">Location:</label>
+    <input type="text" id="location" name="location">
+
+    <label for="rsvpForm">RSVP Form:</label>
+    <select id="rsvpForm" name="rsvpForm">
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+
+    <button type="submit">Create Event</button>
+    <a href="/coordinatorProfile">Go Back</a>
+  </form>
+  <script src="/public/js/main.js"></script>
 </body>
 </html>

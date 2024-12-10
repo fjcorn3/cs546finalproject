@@ -1,7 +1,7 @@
-import eventDataFunctions from './events.js';
-import userDataFunctions from './users.js';
-import commentDataFunctions from './comments.js';
+import * as attendeePostsFunctions from './attendeePosts.js';
+import * as userDataFunctions from './users.js';
+import * as organizerPostsFunctions from './organizerPosts.jss';
 
 export const userData = userDataFunctions;
-export const eventData = eventDataFunctions;
-export const commentData = commentDataFunctions;
+export const attendeePostsData = attendeePostsFunctions;
+export const organizerPostsData = organizerPostsFunctions;
