@@ -1,6 +1,8 @@
 const signupForm = document.getElementById('signupForm');
 const signinForm = document.getElementById('signinForm');
 let errorMsg = document.getElementById('error-message');
+let postForm = document.getElementById('createEventForm');
+let postFormAttendee = document.getElementById('createAttendeePostForm');
   
 const validatePassword = (password) => {
     const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$/;
@@ -89,6 +91,109 @@ if (signinForm) {
         .catch((error) => {
           console.error(error.message);
           eventsList.innerHTML = '<p>Failed to load events. Please try again later.</p>';
+        });
+    }
+
+    if(createEventForm){
+        createEventForm.addEventListener('submit', (e) => {
+            const description = document.getElementById('description').value.trim();
+            const photo = document.getElementById('photo').value.trim();
+            const headCount = document.getElementById('headCount').value.trim();
+            const time = document.getElementById('time').value.trim();
+            const date = document.getElementById('date').value.trim();
+            const location = document.getElementById('location').value.trim();
+            const rsvpForm = document.getElementById('rsvpForm').value.trim();
+
+            try{
+                if (!description && !photo) throw new Error('Post must include a description or photo');
+
+                
+                if(photo){
+                  if(typeof photo !== 'string') throw "improper photo";
+                  photo = photo.trim();
+                  if(!(/\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(photo))) throw "improper image";
+                }
+                
+                if(description){
+                  if(typeof description !== 'string') throw "improper description";
+                  description = description.trim();
+                  if(description.length < 1) throw "empty string for description";  
+                }
+              
+                if(headCount){
+                  if(typeof headCount !== "string") throw "improper head count";
+                  headCount = headCount.trim();
+                  if(!(/^\d+$/.test(headCount))) throw "improper head count";
+                }
+              
+                if(time){
+                  if(typeof time !== 'string') throw "imporper time";
+                  time = time.trim();
+                  if(!(/^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/.test(time))) throw "improper time";
+                }
+              
+                if(date){
+                  if(typeof date !== "string") throw "improper date";
+                  date = date.trim();
+                  if(!(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(date))) throw "improper date";
+                  
+                  //makes sure that the date is not in the past
+                  let dateParts = date.split("/");
+                  let dateNow = new Date(dateParts[2], (dateParts[0] - 1), dateParts[1]);
+                  let dateComp = new Date();
+                  if (dateNow < dateComp) {
+                      throw "improper date";
+                  }
+                }
+              
+                if(location){
+                  if(typeof location !== 'string') throw "improper location";
+                  location = location.trim();
+                  if(location.length < 1) throw "empty string for location";
+
+                }
+              
+                if(rsvpForm){
+                  if(typeof rsvpForm !== 'string') throw "improper rsvp selection";
+              
+                  rsvpForm = rsvpForm.trim();
+                  if(rsvpForm !== "Yes" && rsvpForm !== "No") throw "improper rsvp form selection";
+                }
+                
+                
+  
+
+            }catch(e){
+                //do somthing
+            }
+        });
+
+    }
+
+    if(createAttendeePostForm){
+        createAttendeePostForm.addEventListener('submit', (e) => {
+            const description = document.getElementById('description').value.trim();
+            const photo = document.getElementById('photo').value.trim();
+            try{
+                if (!description && !photo) throw new Error('Post must include a description or photo');
+
+  
+                if(photo){
+                    if(typeof photo !== 'string') throw "improper photo";
+                    photo = photo.trim();
+                    if(!(/\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(photo))) throw "improper image";
+                }
+  
+                if(description){
+                    if(typeof description !== 'string') throw "improper description";
+                    description = description.trim();
+                    if(description.length < 1) throw "empty string for description";
+                }
+  
+
+            }catch(e){
+                //do somthing
+            }
         });
     }
   

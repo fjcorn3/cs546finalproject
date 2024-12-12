@@ -54,7 +54,7 @@ const createUser = async (firstName, lastName, username, email, role, phoneNumbe
   }
   firstName = firstName.trim()
   lastName = lastName.trim();
-  username = username.trim();
+  username = username.trim().toLowerCase();
   password = password.trim();
   email = email.trim();
   role = role.trim().toLowerCase();
@@ -123,7 +123,7 @@ const getUserById = async (username, password) => {
   if (typeof password !== "string") {
     throw new Error("Password must be of type string.");
   }
-  username = username.trim();
+  username = username.trim().toLowerCase();
   password = password.trim();
   if (!/^[A-Za-z]+$/.test(username) || username.length < 5 || username.length > 10){
     throw new Error("User ID should be only letters and has to be no less than 5 characters and no more than 10.");
@@ -160,5 +160,7 @@ const getUserById = async (username, password) => {
     role: user.role
   }
 };
+
+
 
 export { createUser, getUserById };
