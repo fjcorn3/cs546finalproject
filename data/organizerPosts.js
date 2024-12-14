@@ -4,6 +4,7 @@ import { users } from '../config/mongoCollections.js';
 const createEvent = async (userName, photo, description, headCount, time, date, location, rsvpForm) => {
   if (!description && !photo) throw new Error('Post must include a description or photo');
 
+  if(!userName) throw "must provide username";
   if(typeof userName !== 'string') throw "improper username";
   userName = userName.trim().toLowerCase();
   
@@ -98,7 +99,8 @@ const updatePost = async (id, userName, photo, description, headCount, time, dat
   if (!ObjectId.isValid(id)) throw 'invalid object ID';
 
   if (!description && !photo) throw new Error('Post must include a description or photo');
-
+  
+  if(!userName) throw "must provide username";
   if(typeof userName !== 'string') throw "improper username";
   userName = userName.trim().toLowerCase();
   
@@ -223,4 +225,20 @@ const deletePost = async (id) => {
 return True;
 };
 
-export { createEvent, updatePost,  deletePost };
+const getAllPost = async () => {
+  const organizerPostCollection = await organizerPosts();
+
+  let postsList;
+
+  try{
+
+    postsList = await organizerPostCollection.find({}).toArray();}
+  catch(e){
+    throw "could not get posts";
+  }
+
+
+  return postsList;
+}
+
+export { createEvent, updatePost,  deletePost,  getAllPost};

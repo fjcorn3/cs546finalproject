@@ -28,15 +28,15 @@ router.get('/create', authenticateUser, authenticateOrganizer, (req, res) => {
 
 router.post('/create', authenticateUser, authenticateOrganizer, async (req, res) => {
   try {
-    const description = xss(req.body.description);
-    const photo = xss(req.body.photo);
-    const headCount = req.body.headCount;
-    const time = req.body.time;
-    const date = req.body.date;
-    const location = xss(req.body.location);
-    const rsvpForm = req.body.rsvpForm;
-    const event = await createEvent(req.session.user.username, photo, description, headCount, time, date, location, rsvpForm);
-    res.redirect(`/coordinatorProfile`);
+    let description = xss(req.body.description);
+    let photo = xss(req.body.photo);
+    let headCount = req.body.headCount;
+    let time = req.body.time;
+    let date = req.body.date;
+    let location = xss(req.body.location);
+    let rsvpForm = req.body.rsvpForm;
+    let event = await createEvent(req.session.user.username, photo, description, headCount, time, date, location, rsvpForm);
+    res.redirect(`/eventPage`);
   } catch (e) {
     res.status(400).send(e.message);
   }

@@ -11,7 +11,7 @@ router.route('/signup').get(signupRedirect, (req, res) => {
 });
 
 router.post('/signup', async (req, res) => {
-    const { firstName, lastName, username, email, role, phoneNumber, age, password } = req.body;
+    let { firstName, lastName, username, email, role, phoneNumber, age, password } = req.body;
     if (!firstName || !lastName || !username || !email || !role || !phoneNumber || !age || !password) {
         req.session.error = 'All fields must be filled out.';
         return res.redirect('/signup');
@@ -55,12 +55,16 @@ router.post('/signup', async (req, res) => {
         const user = await createUser(firstName, lastName, username, email, role, phoneNumber, age, password);
         if (user.registrationCompleted === true){
             res.redirect('/signin');
+        }else{
+            res.redirect('/signup');
         }
     } catch (e) {
         if (e.message === "Either the username or password is invalid."){
             res.redirect('/signup');
         }
-        return next(e);
+        console.log(e);
+        res.redirect('/signup');
+        //return next(e);
   }
 });
 
