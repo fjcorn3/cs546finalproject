@@ -11,7 +11,7 @@ router.route('/signup').get(signupRedirect, (req, res) => {
   res.sendFile(path.join(__dirname, 'static/signup.html'));
 });
 
-router.post('/signup', async (req, res) => {
+router.route('/signup').post(async (req, res, next) => {
     let { firstName, lastName, username, email, role, phoneNumber, age, password } = req.body;
     if (!firstName || !lastName || !username || !email || !role || !phoneNumber || !age || !password) {
         req.session.error = 'All fields must be filled out.';
@@ -56,16 +56,14 @@ router.post('/signup', async (req, res) => {
         const user = await createUser(firstName, lastName, username, email, role, phoneNumber, age, password);
         if (user.registrationCompleted === true){
             res.redirect('/signin');
-        }else{
-            res.redirect('/signup');
         }
     } catch (e) {
         if (e.message === "Either the username or password is invalid."){
             res.redirect('/signup');
         }
-        console.log(e);
-        res.redirect('/signup');
-        //return next(e);
+        //console.log(e);
+        //res.redirect('/signin');
+        return next(e);
   }
 });
 
@@ -73,7 +71,7 @@ router.route('/signin').get(signinRedirect, (req, res) => {
     res.sendFile(path.join(__dirname, 'static/signin.html'));
   });
 
-router.post('/signin', async(req, res, next) => {
+router.route('/signin').post(async(req, res, next) => {
     const { username, password } = req.body;
     if (!username || !password) {
         req.session.error = 'All fields must be filled out.';

@@ -19,8 +19,7 @@ const validatePassword = (password) => {
   
 if (signupForm) {
     signupForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    try{
+    //e.preventDefault();
     const firstName = document.getElementById('firstName').value.trim();
     const lastName = document.getElementById('lastName').value.trim();
     const username = document.getElementById('username').value.trim();
@@ -30,41 +29,36 @@ if (signupForm) {
     const age = document.getElementById('age').value.trim();
   
     if (!firstName || firstName.length < 2 || firstName.length > 25) {
-        throw 'First name must be between 2 and 25 characters.\n';
+        errorMsg.innerHTML = 'First name must be between 2 and 25 characters.\n';
     }
   
     if (!lastName || lastName.length < 2 || lastName.length > 25) {
-        throw 'Last name must be between 2 and 25 characters.\n';
+        errorMsg.innerHTML = 'Last name must be between 2 and 25 characters.\n';
     }
   
     if (!username || username.length < 5 || username.length > 10) {
-        throw 'Username must be between 5 and 10 characters.\n';
+        errorMsg.innerHTML = 'Username must be between 5 and 10 characters.\n';
     }
   
     if (!validatePassword(password)) {
-        throw 'Password must have at least one uppercase letter, one number, and one special character.\n';
+        errorMsg.innerHTML = 'Password must have at least one uppercase letter, one number, and one special character.\n';
     }
   
     if (!/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)) {
-        throw 'Email must be a valid email address.\n';
+        errorMsg.innerHTML = 'Email must be a valid email address.\n';
     }
   
     if (!/^[0-9]{10}$/.test(phoneNumber)) {
-        throw 'Phone number must be a valid 10-digit number.\n';
+        errorMsg.innerHTML = 'Phone number must be a valid 10-digit number.\n';
     }
   
     if (typeof Number(age) !== 'number' || Number(age) < 18) {
-        throw 'Age must be a number and at least 18 years old.\n';
+        errorMsg.innerHTML = 'Age must be a number and at least 18 years old.\n';
     }
 
-    else{
+    /* else{
         signupForm.submit();
-    }
-
-}catch(e){
-    errorMsg.innerHTML = e;
-}
-  
+    } */
     });
 }
   
