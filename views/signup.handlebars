@@ -1,0 +1,36 @@
+<h2>Sign Up</h2>
+<div id="error-message" class="error-message" hidden></div>
+<form action="/signup" method="POST" id="signupForm">
+  <label for="firstName">First Name:</label>
+  <input type="text" id="firstName" name="firstName">
+  
+  <label for="lastName">Last Name:</label>
+  <input type="text" id="lastName" name="lastName">
+  
+  <label for="username">Username:</label>
+  <input type="text" id="username" name="username">
+  
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email">
+  
+  <label for="role">Role:</label>
+  <select id="role" name="role">
+    <option value="organizer">organizer</option>
+    <option value="attendee">attendee</option>
+  </select>
+  
+  <label for="phoneNumber">Phone Number:</label>
+  <input type="tel" id="phoneNumber" name="phoneNumber">
+  
+  <label for="age">Age:</label>
+  <input type="number" id="age" name="age">
+  
+  <label for="password">Password:</label>
+  <input type="password" id="password" name="password">
+  
+  <button type="submit">Sign Up</button>
+  <br>
+  <br>
+  <a href="/signin">Already have an account? Sign in here!</a>
+</form>
+<script src="/public/js/validate_signup.js"></script>

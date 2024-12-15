@@ -1,0 +1,18 @@
+<header>
+  <div class="header-content">
+    <h1>Event Finder</h1>
+  </div>
+  <nav>
+    <a class="nav-item" href="/home">Home</a>
+    <a class="nav-item" href="/events">Events</a>
+
+    <span class="nav-right">
+      {{#if signedIn}}
+      <a class="nav-item" href="/signout">Sign Out</a>
+      {{else}}
+      <a class="nav-item" href="/signup">Sign Up</a>
+      <a class="nav-item" href="/signin">Sign In</a>
+      {{/if}}
+    </span>
+  </nav>
+</header>

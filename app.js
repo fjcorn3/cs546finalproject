@@ -4,6 +4,8 @@ import path from 'path';
 import routes from './routes/index.js';  // Ensure this points to the correct route file
 import { logRequest } from './middleware.js'; // Ensure middleware is properly imported
 import { organizerPosts, attendeePosts } from './config/mongoCollections.js';
+import exphbs from 'express-handlebars';
+import constructorMethod from './routes/index.js';
 
 const app = express();
 const __dirname = path.resolve();
@@ -20,52 +22,74 @@ app.use(
   })
 );
 
-app.use(logRequest);
+// app.use(logRequest);
 
-app.get('/api/posts', async (req, res) => {
-  const organizerPostCollection = await organizerPosts();
+// app.get('/api/posts', async (req, res) => {
+//   const organizerPostCollection = await organizerPosts();
 
-  try {
-      const postsList = await organizerPostCollection.find({}).toArray(); 
-      res.json(postsList);
-  } catch (e) {
-      //send error
-  }
-});
+//   try {
+//       const postsList = await organizerPostCollection.find({}).toArray(); 
+//       res.json(postsList);
+//   } catch (e) {
+//       //send error
+//   }
+// });
 
-app.get('/api/attendeePosts', async (req, res) => {
-  const attendeePostsCollection = await attendeePosts();
+// app.get('/api/attendeePosts', async (req, res) => {
+//   const attendeePostsCollection = await attendeePosts();
 
-  try {
-      const postsList = await attendeePostsCollection.find({}).toArray(); 
-      res.json(postsList);
-  } catch (e) {
-      //send error
-  }
-});
+//   try {
+//       const postsList = await attendeePostsCollection.find({}).toArray(); 
+//       res.json(postsList);
+//   } catch (e) {
+//       //send error
+//   }
+// });
 
-app.get('/api/session-data', (req, res) => {
-  if (!req.session.user) {
-    console.log("not picking");
-    //send error
-  }
-  console.log("heree");
-  res.json(req.session.user);
-  console.log(req.session.user);
-});
+// app.get('/api/session-data', (req, res) => {
+//   if (!req.session.user) {
+//     console.log("not picking");
+//     //send error
+//   }
+//   console.log("heree");
+//   res.json(req.session.user);
+//   console.log(req.session.user);
+// });
 
 
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
-app.use('/static', express.static(path.join(__dirname, 'static')));
+// app.use('/static', express.static(path.join(__dirname, 'static')));
 
-app.use('/', routes);
+// app.use('/', routes);
 
-app.use((req, res, next) => {
-  res.status(404).sendFile(path.join(__dirname, 'static/404.html'));
+// app.use((req, res, next) => {
+//   res.status(404).sendFile(path.join(__dirname, 'static/404.html'));
+// });
+
+app.get('/', async (req, res) => {
+  res.redirect('/home');
 });
 
+const handlebarsInstance = exphbs.create({
+  defaultLayout: 'main',
+  // Specify helpers which are only registered on this instance.
+  helpers: {
+    asJSON: (obj, spacing) => {
+      if (typeof spacing === 'number')
+        return new Handlebars.SafeString(JSON.stringify(obj, null, spacing));
+
+      return new Handlebars.SafeString(JSON.stringify(obj));
+    }
+  },
+  partialsDir: ['views/partials/']
+});
+
+app.engine('handlebars', handlebarsInstance.engine);
+app.set('view engine', 'handlebars');
+
+constructorMethod(app);
+
 app.listen(3000, () => {
-  console.log("We've now got a server!");
-  console.log('Your routes will be running on http://localhost:3000');
+  console.log('Server is up on http://localhost:3000');
 });
