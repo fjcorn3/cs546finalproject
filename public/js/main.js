@@ -219,11 +219,13 @@ if (signinForm) {
             })
                 .then(response => {
                     if (!response.ok) {
+                        console.log("errrrr");
                        //throw error
                     }
                     return response.json(); 
                 })
                 .then(sessionData => {
+                    console.log('padding');
                     if("organizer" === sessionData.role){
                         let profileOption = document.getElementById("profileOption");
                         let aProfile = document.createElement('a');
@@ -238,12 +240,14 @@ if (signinForm) {
                         creating1.appendChild(creating);
                     }
     
-                })
+                //})
 
             fetch('http://localhost:3000/api/posts')
             .then(response => response.json()) // Parse the JSON response
             .then(data => {
                 let newEvents = data;
+
+                console.log(newEvents[0]);
 
         for(let i = 0; i<newEvents.length; i++){
             let newEvent = document.createElement('il');
@@ -333,23 +337,27 @@ if (signinForm) {
             }
 
             if(newEvents[i].rating){
+                //add rating logic here
                 let ratingTitle = document.createElement('p');
                 ratingTitle.textContent = "Rating: "
                 let rating = document.createElement('p');
                 rating.id = "rating";
 
-                let sum = 0;
-                for(let j = 0; i<newEvents[i].rating.length; j++){
-                    sum += newEvents[i].rating[j];
-                }
+                // let sum = 0;
+                // for(let j = 0; i<newEvents[i].rating.length; j++){
+                //     console.log(newEvents[i].rating[j]);
+                //     console.log("fail");
+                //     sum += newEvents[i].rating[j];
+                // }
 
 
-                let average = sum/((newEvents[i].rating.length) + 1);
-                console.log(average);
-                rating.textContent = average.toString();
+                // let average = sum/((newEvents[i].rating.length) + 1);
+                // console.log(average);
+                // rating.textContent = average.toString();
                 ratingTitle.appendChild(rating);
                 newDiv.appendChild(ratingTitle);
             }
+            console.log("making");
 
             let commentSec = document.createElement('div');
             let comment = document.createElement('a');
@@ -380,8 +388,11 @@ if (signinForm) {
             newEvent.appendChild(newDiv);
             eventList.appendChild(newEvent);
 
-        }});
+            console.log("through");
+
+        }}) });
     }catch(e){
+        console.log(e);
         //smth
     }
 
@@ -517,18 +528,19 @@ if (signinForm) {
             }
 
             if(newEvents[i].rating){
+                //add rating logic here
                 let ratingTitle = document.createElement('p');
                 ratingTitle.textContent = "Rating: "
                 let rating = document.createElement('p');
                 rating.id = "rating";
 
-                let sum = 0;
-                for(let j = 0; i<newEvents[i].rating.length; j++){
-                    sum += Number(newEvents[i].rating[j]);
-                }
+                // let sum = 0;
+                // for(let j = 0; i<newEvents[i].rating.length; j++){
+                //     sum += Number(newEvents[i].rating[j]);
+                // }
 
-                let average = sum/(newEvents[i].rating.length + 1);
-                rating.textContent = average.toString();
+                // let average = sum/(newEvents[i].rating.length + 1);
+                // rating.textContent = average.toString();
                 ratingTitle.appendChild(rating);
                 newDiv.appendChild(ratingTitle);
             }

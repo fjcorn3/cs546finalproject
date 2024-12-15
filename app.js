@@ -46,9 +46,12 @@ app.get('/api/attendeePosts', async (req, res) => {
 
 app.get('/api/session-data', (req, res) => {
   if (!req.session.user) {
+    console.log("not picking");
     //send error
   }
+  console.log("heree");
   res.json(req.session.user);
+  console.log(req.session.user);
 });
 
 
