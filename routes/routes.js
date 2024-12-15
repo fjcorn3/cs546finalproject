@@ -1,4 +1,5 @@
 import Router from 'express';
+import * as validation from '../validation.js';
 
 const router = Router();
 
@@ -7,6 +8,7 @@ router.route('/home').get(async (req, res) => {
 });
 
 router.route('/signout').get(async (req, res) => {
+  req.session.destroy();
   res.render('signout', {title: "Signed Out"});
 });
 

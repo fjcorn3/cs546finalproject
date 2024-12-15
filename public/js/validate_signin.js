@@ -1,25 +1,48 @@
-const signinForm = document.getElementById('signinForm');
-let errorMsg = document.getElementById('error-message');
-
-const validatePassword = (password) => {
-    const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$/;
-    return regex.test(password);
-};
+let signinForm = document.getElementById('signinForm');
+let error = document.getElementById('error');
+let errorMessage = document.getElementById('error-message');
 
 if(signinForm) {
-  signinForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
+  let username = document.getElementById('username');
+  let password = document.getElementById('password');
 
-    if(!username || username.length < 5 || username.length > 10) {
-      errorMsg.innerHTML = 'User ID must be between 5 and 10 characters.\n';
+  signinForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    if(!validUsername(username.value)) {
+      errorMessage.innerHTML = "Invalid User Name!";
+      error.hidden = false;
+      return;
+    }
+  
+    if(!validPassword(password.value)) {
+      errorMessage.innerHTML = "Invalid Password!";
+      error.hidden = false;
+      return;
     }
 
-    if(!validatePassword(password)) {
-      errorMsg.innerHTML = 'Password must have at least one uppercase letter, one number, and one special character.\n';
-    }
-
+    error.hidden = true;
     signinForm.submit();
   });
+}
+
+const validUsername = (userId) => {
+  if(typeof userId!== 'string') return false;
+ 
+  userId = userId.trim();
+
+  if(userId.length < 5 || userId.length > 10 || /\d/.test(userId)) return false;
+  
+  return true;
+}
+
+const validPassword = (password) => {
+  if(typeof password !== 'string') return false;
+
+  password = password.trim();
+  const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]+$/g;
+
+  if(password.length < 8 || !passwordRegex.test(password)) return false;
+
+  return true;
 }

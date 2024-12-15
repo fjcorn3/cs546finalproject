@@ -1,51 +1,117 @@
-const signupForm = document.getElementById('signupForm');
-let errorMsg = document.getElementById('error-message');
+let signupForm = document.getElementById('signupForm');
+let error = document.getElementById('error');
+let errorMessage = document.getElementById('error-message');
 
-const validatePassword = (password) => {
-    const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$/;
-    return regex.test(password);
-};
+if(signupForm) {
+  let firstName = document.getElementById('firstName');
+  let lastName = document.getElementById('lastName');
+  let username = document.getElementById('username');
+  let email = document.getElementById('email');
+  let phoneNumber = document.getElementById('phoneNumber');
+  let age = document.getElementById('age');
+  let password = document.getElementById('password');
+  let confirm = document.getElementById('confirmPassword');
+  let role = document.getElementById('role');
 
-if (signupForm) {
-  signupForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+  signupForm.addEventListener('submit', (event) => {
+    event.preventDefault();
 
-    const firstName = document.getElementById('firstName').value.trim();
-    const lastName = document.getElementById('lastName').value.trim();
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const phoneNumber = document.getElementById('phoneNumber').value.trim();
-    const age = document.getElementById('age').value.trim();
-
-    if (!firstName || firstName.length < 2 || firstName.length > 25) {
-        errorMsg.innerHTML = 'First name must be between 2 and 25 characters.\n';
+    if(!validName(firstName.value)) {
+      errorMessage.innerHTML = "Invalid First Name";
+      error.hidden = false;
+      return;
     }
 
-    if (!lastName || lastName.length < 2 || lastName.length > 25) {
-        errorMsg.innerHTML = 'Last name must be between 2 and 25 characters.\n';
+    if(!validName(lastName.value)) {
+      errorMessage.innerHTML = "Invalid Last Name";
+      error.hidden = false;
+      return;
     }
 
-    if (!username || username.length < 5 || username.length > 10) {
-        errorMsg.innerHTML = 'Username must be between 5 and 10 characters.\n';
+    if(!validUsername(username.value)) {
+      errorMessage.innerHTML = "Invalid User Name!";
+      error.hidden = false;
+      return;
     }
 
-    if (!validatePassword(password)) {
-        errorMsg.innerHTML = 'Password must have at least one uppercase letter, one number, and one special character.\n';
+    if(!validAge(age.value)) {
+      errorMessage.innerHTML = "Invalid Age!";
+      error.hidden = false;
+      return;
     }
 
-    if (!/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)) {
-        errorMsg.innerHTML = 'Email must be a valid email address.\n';
+    if (!/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email.value)) {
+      errorMessage.innerHTML = 'Email must be a valid email address!';
+      error.hidden = false;
+      return;
+    }
+  
+    if (!/^[0-9]{10}$/.test(phoneNumber.value)) {
+      errorMessage.innerHTML = 'Phone number must be a valid 10-digit number!';
+      error.hidden = false;
+      return;
     }
 
-    if (!/^[0-9]{10}$/.test(phoneNumber)) {
-        errorMsg.innerHTML = 'Phone number must be a valid 10-digit number.\n';
+    if(!validPassword(password.value)) {
+      errorMessage.innerHTML = "Invalid Password!";
+      error.hidden = false;
+      return;
     }
 
-    if (typeof Number(age) !== 'number' || Number(age) < 18) {
-        errorMsg.innerHTML = 'Age must be a number and at least 18 years old.\n';
+    if(password.value !== confirm.value) {
+      errorMessage.innerHTML = "Passwords Do Not Match!";
+      error.hidden = false;
+      return;
     }
 
+    if(role.value.trim() !== 'attendee' && role.value.trim() !== 'organizer') {
+      errorMessage.innerHTML = "Invalid Role";
+      error.hidden = false;
+      return;
+    }
+   
+    error.hidden = true;
     signupForm.submit();
   });
+}
+
+const validName = (name) => {
+  if(typeof name !== 'string') return false;
+ 
+  name = name.trim();
+
+  if(name.length < 2 || name.length > 25 || /\d/.test(name)) return false;
+  
+  return true;
+};
+
+const validUsername = (userId) => {
+  if(typeof userId!== 'string') return false;
+ 
+  userId = userId.trim();
+
+  if(userId.length < 5 || userId.length > 10 || /\d/.test(userId)) return false;
+  
+  return true;
+}
+
+const validPassword = (password) => {
+  if(typeof password !== 'string') return false;
+
+  password = password.trim();
+  const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]+$/g;
+
+  if(password.length < 8 || !passwordRegex.test(password)) return false;
+
+  return true;
+}
+
+const validAge = (age) => {
+  age = parseInt(age);
+
+  if(isNaN(age)) return false;
+
+  if(age < 12 || age > 100) return false;
+
+  return true;
 }
