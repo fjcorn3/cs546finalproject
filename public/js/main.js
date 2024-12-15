@@ -343,17 +343,17 @@ if (signinForm) {
                 let rating = document.createElement('p');
                 rating.id = "rating";
 
-                // let sum = 0;
-                // for(let j = 0; i<newEvents[i].rating.length; j++){
-                //     console.log(newEvents[i].rating[j]);
-                //     console.log("fail");
-                //     sum += newEvents[i].rating[j];
-                // }
-
-
-                // let average = sum/((newEvents[i].rating.length) + 1);
-                // console.log(average);
-                // rating.textContent = average.toString();
+                let sum = 0;
+                for(let j = 0; j < newEvents[i].rating.length; j++){
+                    //console.log(newEvents[i].rating[j]);
+                    //console.log("fail");
+                    sum += newEvents[i].rating[j];
+                }
+                //console.log(sum);
+                let average = sum/((newEvents[i].rating.length));
+                average = Math.round(average * 10) / 10
+                //console.log(average);
+                rating.textContent = average.toString();
                 ratingTitle.appendChild(rating);
                 newDiv.appendChild(ratingTitle);
             }
@@ -534,13 +534,16 @@ if (signinForm) {
                 let rating = document.createElement('p');
                 rating.id = "rating";
 
-                // let sum = 0;
-                // for(let j = 0; i<newEvents[i].rating.length; j++){
-                //     sum += Number(newEvents[i].rating[j]);
-                // }
-
-                // let average = sum/(newEvents[i].rating.length + 1);
-                // rating.textContent = average.toString();
+                let sum = 0;
+                for(let j = 0; j < newEvents[i].rating.length; j++){
+                    sum += newEvents[i].rating[j];
+                }
+                //console.log(sum);
+                let average = sum/(newEvents[i].rating.length);
+                average = Math.round(average * 10) / 10
+                //console.log(average);
+                rating.textContent = average.toString();
+                //console.log(rating.textContent);
                 ratingTitle.appendChild(rating);
                 newDiv.appendChild(ratingTitle);
             }
