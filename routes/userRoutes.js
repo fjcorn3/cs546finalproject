@@ -120,6 +120,7 @@ router.route('/eventPage').get(authenticateUser, async (req, res) => {
 router.route('/reviewPage').get(authenticateUser, async (req, res) => {
     res.sendFile(path.join(__dirname, 'static/reviewPage.html'));
 });
+
 router.route('/coordinatorProfile/:username').get(authenticateUser, async (req, res) => {
     res.sendFile(path.join(__dirname, 'static/coordinatorProfile.html'));
 });

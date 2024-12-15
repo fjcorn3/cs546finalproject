@@ -1,4 +1,6 @@
 
+//const linkBackCoorProf = document.getElementById('linkBackCoorProf');
+
 const signupForm = document.getElementById('signupForm');
 const signinForm = document.getElementById('signinForm');
 let errorMsg = document.getElementById('error-message');
@@ -74,6 +76,7 @@ if (signinForm) {
     if (!validatePassword(password)) {
         errorMsg.innerHTML = 'Password must have at least one uppercase letter, one number, and one special character.\n';
     }
+    /* linkBackCoorProf.href = `/coordinatorProfile/${username}`; */
     });
 }
 
