@@ -1,4 +1,3 @@
-import { getAllPost } from '../data/organizerPosts.js';
 
 const signupForm = document.getElementById('signupForm');
 const signinForm = document.getElementById('signinForm');
@@ -6,6 +5,10 @@ let errorMsg = document.getElementById('error-message');
 let postForm = document.getElementById('createEventForm');
 let postFormAttendee = document.getElementById('createAttendeePostForm');
 let eventsList = document.getElementById('eventsList');
+let coordinatorProfile = document.getElementById('OrganizerEvents');
+let reviewList = document.getElementById('reviewsList');
+let commentForm = document.getElementById('commentForm');
+let rateForm = document.getElementById('rateForm');
 
 //add a get element by id for event page and add an add new function that adds iems from post database that have not been inserted. to do this you can add anothe atrribute with inserted: true/false
   
@@ -171,7 +174,7 @@ if (signinForm) {
                   if(typeof rsvpForm !== 'string') throw "improper rsvp selection";
               
                   rsvpForm = rsvpForm.trim();
-                  if(rsvpForm !== "Yes" && rsvpForm !== "No") throw "improper rsvp form selection";
+                  if(rsvpForm !== "yes" && rsvpForm !== "no") throw "improper rsvp form selection";
                 }
                 
   
@@ -211,13 +214,229 @@ if (signinForm) {
     }
 
     if(eventsList){
-        document.getElementById('eventList');
+        let eventList = document.getElementById('eventList');
         try{
 
-        let newEvents = await getAllPost();
+            fetch('/api/session-data', {
+                credentials: 'include',
+            })
+                .then(response => {
+                    if (!response.ok) {
+                       //throw error
+                    }
+                    return response.json(); 
+                })
+                .then(sessionData => {
+                    if("organizer" === sessionData.role){
+                        let profileOption = document.getElementById("profileOption");
+                        let aProfile = document.createElement('a');
+                        aProfile.href = `/coordinatorProfile/${sessionData.username}`;
+                        aProfile.textContent = "Go To My Profile";
+                        profileOption.appendChild(aProfile);
+                        
+                        let creating1 = document.getElementById("creating");
+                        let creating = document.createElement('a');
+                        creating.href = '/create';
+                        creating.textContent = "Create New Post";
+                        creating1.appendChild(creating);
+                    }
+    
+                })
+
+            fetch('http://localhost:3000/api/posts')
+            .then(response => response.json()) // Parse the JSON response
+            .then(data => {
+                let newEvents = data;
 
         for(let i = 0; i<newEvents.length; i++){
             let newEvent = document.createElement('il');
+            newEvent.id = newEvents[i]._id.toString();
+
+            let newDiv = document.createElement('div');
+            newDiv.id = "aPost";
+
+            let userNameTitle = document.createElement('h3');
+            let userName = document.createElement('a');
+            userName.textContent = newEvents[i].userName;
+            userName.href = `/coordinatorProfile/${newEvents[i].userName}`;
+            userNameTitle.appendChild(userName);
+            newDiv.appendChild(userNameTitle);
+
+            if(newEvents[i].description){
+                let description = document.createElement('p');
+                description.textContent = newEvents[i].description;
+                newDiv.appendChild(description);
+            }
+
+            if(newEvents[i].photo){
+                let photo = document.createElement('img');
+                photo.src = newEvents[i].photo;
+                newDiv.appendChild(photo);
+            }
+
+            if(newEvents[i].headCount){
+                let headCountTitle = document.createElement('p');
+                headCountTitle.id = "headCount Title";
+                headCountTitle.textContent = "headCount: ";
+                let headCount = document.createElement('p');
+                headCount.textContent = newEvents[i].headCount;
+                headCountTitle.append(headCount);
+                newDiv.appendChild(headCountTitle);
+            }
+
+            if(newEvents[i].time){
+                let timeTitle = document.createElement('p');
+                timeTitle.id = "time Title";
+                timeTitle.textContent = "Time: ";
+                let time = document.createElement('p');
+                time.textContent = newEvents[i].time;
+                timeTitle.appendChild(time);
+                newDiv.appendChild(timeTitle);
+            }
+
+            if(newEvents[i].date){
+                let dateTitle = document.createElement('p');
+                dateTitle.id = "date Title";
+                dateTitle.textContent = "Date: ";
+                let date = document.createElement('p');
+                date.textContent = newEvents[i].date;
+                dateTitle.appendChild(date);
+                newDiv.appendChild(dateTitle);
+            }
+
+            if(newEvents[i].location){
+                let locationTitle = document.createElement('p');
+                locationTitle.id = "location Title";
+                locationTitle.textContent = "Location: ";
+                let location = document.createElement('p');
+                location.textContent = newEvents[i].location;
+                locationTitle.appendChild(location);
+                newDiv.appendChild(locationTitle);
+            }
+
+            if(newEvents[i].rsvpForm){
+                if(newEvents[i].rsvpForm === "yes"){
+                let rsvpForm = document.createElement('a');
+                rsvpForm.href = '/rsvpForm';
+                rsvpForm.textContent = "RSVP Form";
+                newDiv.appendChild(rsvpForm);}
+            }
+
+            if(newEvents[i].comments){
+                let comments = document.createElement('div');
+                comments.id = "commentSection";
+                comments.textContent = "Comment Section: ";
+                for(let j = 0; j<newEvents[i].comments.length; j++){
+                    let newComment = document.createElement('p');
+                    newComment.id = "aComment";
+                    newComment.textContent = newEvents[i].comments[j];
+                    comments.appendChild(newComment);
+                }
+                newDiv.appendChild(comments);
+            }
+
+            if(newEvents[i].rating){
+                let ratingTitle = document.createElement('p');
+                ratingTitle.textContent = "Rating: "
+                let rating = document.createElement('p');
+                rating.id = "rating";
+
+                let sum = 0;
+                for(let j = 0; i<newEvents[i].rating.length; j++){
+                    sum += newEvents[i].rating[j];
+                }
+
+
+                let average = sum/((newEvents[i].rating.length) + 1);
+                console.log(average);
+                rating.textContent = average.toString();
+                ratingTitle.appendChild(rating);
+                newDiv.appendChild(ratingTitle);
+            }
+
+            let commentSec = document.createElement('div');
+            let comment = document.createElement('a');
+            comment.href = `/addComment/${newEvents[i]._id.toString()}`;
+            comment.textContent = "Add Comment";
+
+            // comment.addEventListener('click', () => {
+            //     window.location.href = `/addComment/${newEvents[i]._id.toString()}`; 
+            // });
+
+            commentSec.appendChild(comment);
+
+            let rateSec = document.createElement('div');
+            let rate = document.createElement('a');
+            rate.href =  `/addRate/${newEvents[i]._id.toString()}`;
+            rate.textContent = "Add Rating";
+
+            // rate.addEventListener('click', () => {
+            //     window.location.href = `/addRate/${newEvents[i]._id.toString()}`; 
+            // });
+
+
+            rateSec.appendChild(rate);
+            
+            newDiv.appendChild(commentSec);
+            newDiv.appendChild(rateSec);
+
+            newEvent.appendChild(newDiv);
+            eventList.appendChild(newEvent);
+
+        }});
+    }catch(e){
+        //smth
+    }
+
+    }
+
+    if(coordinatorProfile){
+        let eventList = document.getElementById('eventList');
+        try{
+            fetch('http://localhost:3000/api/posts')
+            .then(response => response.json()) 
+            .then(data => {
+                let newEvents = data;
+
+                let path = window.location.pathname;
+                let segments = path.split('/'); 
+                let userName = segments[segments.length - 1];
+
+                let currUser;
+
+                fetch('/api/session-data', {
+                    credentials: 'include',
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                           //throw error
+                        }
+                        return response.json(); 
+                    })
+                    .then(sessionData => {
+                        if(userName === sessionData.username){
+                            currUser =  true;
+                            let profile = document.getElementById('profileDetails');
+                            let creating = document.createElement('a');
+                            creating.href = '/create';
+                            creating.textContent = "Create New Post";
+                            profile.appendChild(creating);
+                        }
+        
+                    //})
+
+                // if(userName === session.user.username){
+                //     let profile = document.getElementById('profileDetails');
+                //     let creating = document.createElement('a');
+                //     creating.href = '/create';
+                //     creating.textContnet = "Create New Post";
+                //     profile.appendChild(creating);
+                // }
+
+
+                for(let i = 0; i<newEvents.length; i++){
+                    if(newEvents[i].userName === userName){
+                        let newEvent = document.createElement('il');
             newEvent.id = newEvents[i]._id.toString();
 
             let newDiv = document.createElement('div');
@@ -251,8 +470,8 @@ if (signinForm) {
 
             if(newEvents[i].time){
                 let timeTitle = document.createElement('p');
-                headCountTitle.id = "time Title";
-                headCountTitle.textContent = "Time: ";
+                timeTitle.id = "time Title";
+                timeTitle.textContent = "Time: ";
                 let time = document.createElement('p');
                 time.textContent = newEvents[i].time;
                 timeTitle.appendChild(time);
@@ -280,10 +499,11 @@ if (signinForm) {
             }
 
             if(newEvents[i].rsvpForm){
+                if(newEvents[i].rsvpForm === "yes"){
                 let rsvpForm = document.createElement('a');
                 rsvpForm.href = '/rsvpForm';
                 rsvpForm.textContent = "RSVP Form";
-                newDiv.appendChild(rsvpForm);
+                newDiv.appendChild(rsvpForm);}
             }
 
             if(newEvents[i].comments){
@@ -315,13 +535,181 @@ if (signinForm) {
                 ratingTitle.appendChild(rating);
                 newDiv.appendChild(ratingTitle);
             }
+            let commentSec = document.createElement('div');
+            let comment = document.createElement('a');
+            comment.href =`/addComment/${newEvents[i]._id.toString()}`; 
+            comment.textContent = "Add Comment";
 
-            
+            // comment.addEventListener('click', () => {
+            //     window.location.href = `/addComment/${newEvents[i]._id.toString()}`; 
+            // });
+
+            commentSec.appendChild(comment);
+
+            let rateSec = document.createElement('div');
+            let rate = document.createElement('a');
+            rate.href = `/addRate/${newEvents[i]._id.toString()}`;
+            rate.textContent = "Add Rating";
+
+            // rate.addEventListener('click', () => {
+            //     window.location.href = `/addRate/${newEvents[i]._id.toString()}`; 
+            // });
+
+            rateSec.appendChild(rate);
+
+            newDiv.appendChild(commentSec);
+            newDiv.appendChild(rateSec);
+
+            newEvent.appendChild(newDiv);
+
+            console.log("username" + userName);
+            console.log(currUser);
+
+            if(currUser){
+                console.log("heree");
+                let updating = document.createElement('button');
+                updating.id = newEvents[i]._id.toString();
+                updating.textContent = "Update Post";
+
+                updating.addEventListener('click', () => {
+                    window.location.href = `/updatePost/${newEvents[i]._id.toString()}`; 
+                });
+
+                let deleting = document.createElement('button');
+                deleting.id = newEvents[i]._id.toString();
+                deleting.textContent = "Delete Post";
+                
+                deleting.addEventListener('click', () => {
+                    window.location.href = `/deletePost/${newEvents[i]._id.toString()}`; 
+                });
+
+                newEvent.appendChild(updating);
+                newEvent.appendChild(deleting);
+
+            }
+            eventList.appendChild(newEvent);
+
+                    }
+                }})
+
+            });
+
+        }catch(e){
 
         }
+    }
+
+    if(reviewList){
+        let eventList = document.getElementById('reviewList');
+        try{
+            fetch('/api/session-data', {
+                credentials: 'include',
+            })
+                .then(response => {
+                    if (!response.ok) {
+                       //throw error
+                    }
+                    return response.json(); 
+                })
+                .then(sessionData => {
+                    if("attendee" === sessionData.role){
+                        let creating1 = document.getElementById("creating");
+                        let creating = document.createElement('a');
+                        creating.href = '/createAttendee';
+                        creating.textContent = "Create New Post";
+                        creating1.appendChild(creating);
+                    }
+                    if("organizer" === sessionData.role){
+                        let profileOption = document.getElementById("profileOption");
+                        let aProfile = document.createElement('a');
+                        aProfile.href = `/coordinatorProfile/${sessionData.username}`;
+                        aProfile.textContent = "Go To My Profile";
+                        profileOption.appendChild(aProfile);
+                    }
+    
+                })
+
+            fetch('http://localhost:3000/api/attendeePosts')
+            .then(response => response.json()) 
+            .then(data => {
+                let newEvents = data;
+
+        for(let i = 0; i<newEvents.length; i++){
+            let newEvent = document.createElement('il');
+            newEvent.id = newEvents[i]._id.toString();
+
+            let newDiv = document.createElement('div');
+            newDiv.id = "aPost";
+
+            let userNameTitle = document.createElement('h3');
+            userNameTitle.textContent = newEvents[i].userName;
+            newDiv.appendChild(userNameTitle);
+
+            if(!newEvents[i].description && !newEvents[i].description) throw "could not load contents";
+
+            if(newEvents[i].description){
+                let description = document.createElement('p');
+                description.textContent = newEvents[i].description;
+                newDiv.appendChild(description);
+            }
+
+            if(newEvents[i].photo){
+                let photo = document.createElement('img');
+                photo.src = newEvents[i].photo;
+                newDiv.appendChild(photo);
+            }
+            newEvent.appendChild(newDiv);
+            console.log(eventList);
+            eventList.appendChild(newEvent);
+        }})}catch(e){
+                //do smth
+            }
+    }
+
+    if(commentForm){
+        commentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            try{
+
+            let comment = document.getElementById("comment").value;
+
+            if(!comment) throw "must provide comment";
+            if(typeof comment !== 'string') throw "improper comment";
+            comment = comment.trim().toLowerCase();
+            if(!comment) throw "must provide comment";
+
+            else{
+                commentForm.submit();
+            }
+        }catch(e){
+            //smth
+        }
+
+
+    });
+}
+
+if(rateForm){
+    rateForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        try{
+
+        let rate = document.getElementById("rate").value;
+
+        if(!rate) throw "must provide rate";
+        if(!(/^\d+$/.test(rate))) throw "rate must be a number";
+
+        else{
+            rateForm.submit();
+        }
     }catch(e){
+        console.log(e);
         //smth
     }
 
-    }
+
+});
+}
   

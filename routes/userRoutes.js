@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import { createUser, getUserById } from '../data/users.js';
 import { signinRedirect, signupRedirect, authenticateUser, authenticateOrganizer, allowSignOut } from '../middleware.js';
+import {ObjectId} from 'mongodb';
 
 const router = express.Router();
 const __dirname = path.resolve();
@@ -104,7 +105,7 @@ router.post('/signin', async(req, res, next) => {
         if (user.role === 'attendee') {
           return res.redirect('/eventPage');
         } else {
-          return res.redirect('/coordinatorProfile');
+          return res.redirect(`/coordinatorProfile/${user.username}`);
         }
       } catch (e) {
         if (e.message === "Either the username or password is invalid."){
@@ -118,7 +119,10 @@ router.route('/eventPage').get(authenticateUser, async (req, res) => {
     res.sendFile(path.join(__dirname, 'static/eventPage.html'));
 });
 
-router.route('/coordinatorProfile').get(authenticateOrganizer, async (req, res) => {
+router.route('/reviewPage').get(authenticateUser, async (req, res) => {
+    res.sendFile(path.join(__dirname, 'static/reviewPage.html'));
+});
+router.route('/coordinatorProfile/:username').get(authenticateUser, async (req, res) => {
     res.sendFile(path.join(__dirname, 'static/coordinatorProfile.html'));
 });
 

@@ -1,5 +1,6 @@
 import { attendeePosts } from '../config/mongoCollections.js';
 import { users } from '../config/mongoCollections.js';
+import {ObjectId} from 'mongodb';
 
 const createPost = async (userName, photo, description) => {
   if (!description && !photo) throw new Error('Post must include a description or photo');
@@ -38,91 +39,91 @@ const createPost = async (userName, photo, description) => {
 
   //const user = await userCollection.findOne({ username: userName });
   //user.posts.append(newPost);
-  return True;
+  return true;
 };
 
-const updatePost = async (id, userName, photo, description) => {
-  if(!id) throw "no id is provided.";
-  if(typeof id !== "string") throw "id is not of proper type.";
-  if(id.trim() === "") throw "empty id or only contains spaces.";
-  id = id.trim();
-  if (!ObjectId.isValid(id)) throw 'invalid object ID';
+// const updatePost = async (id, userName, photo, description) => {
+//   if(!id) throw "no id is provided.";
+//   if(typeof id !== "string") throw "id is not of proper type.";
+//   if(id.trim() === "") throw "empty id or only contains spaces.";
+//   id = id.trim();
+//   if (!ObjectId.isValid(id)) throw 'invalid object ID';
 
-  if (!description && !photo) throw new Error('Post must include a description or photo');
+//   if (!description && !photo) throw new Error('Post must include a description or photo');
 
-  if(typeof userName !== 'string') throw "improper username";
-  userName = userName.trim().toLowerCase();
+//   if(typeof userName !== 'string') throw "improper username";
+//   userName = userName.trim().toLowerCase();
   
-  if(photo){
-    if(typeof photo !== 'string') throw "improper photo";
-    photo = photo.trim();
-    if(!(/\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(photo))) throw "improper image";
-  }
+//   if(photo){
+//     if(typeof photo !== 'string') throw "improper photo";
+//     photo = photo.trim();
+//     if(!(/\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(photo))) throw "improper image";
+//   }
   
-  if(description){
-    if(typeof description !== 'string') throw "improper description";
-    description = description.trim();
-    if(description.length < 1) throw "empty string for description";
+//   if(description){
+//     if(typeof description !== 'string') throw "improper description";
+//     description = description.trim();
+//     if(description.length < 1) throw "empty string for description";
 
     
-  }
+//   }
 
-  const update = {
-    username: userName,
-    photo: photo,
-    description: description
-  }
+//   const update = {
+//     username: userName,
+//     photo: photo,
+//     description: description
+//   }
 
-  const attendeePostCollection = await attendeePosts();
-  const newInfo = await attendeePostCollection.findOneAndUpdate(
-    {_id: ObjectId.createFromHexString(id)},
-    {$set: update},
-    {returnDocument: 'after'}
-  );
-  if (!newInfo) {
-    throw "could not update post successfully";
-  }
+//   const attendeePostCollection = await attendeePosts();
+//   const newInfo = await attendeePostCollection.findOneAndUpdate(
+//     {_id: ObjectId.createFromHexString(id)},
+//     {$set: update},
+//     {returnDocument: 'after'}
+//   );
+//   if (!newInfo) {
+//     throw "could not update post successfully";
+//   }
 
-  return newInfo;
+//   return newInfo;
 
 
-};
+// };
 
-const deletePost = async (id) => {
-  if(!id) throw "no id is provided.";
-  if(typeof id !== "string") throw "id is not of proper type.";
-  if(id.trim() === "") throw "empty id or only contains spaces.";
-  id = id.trim();
-  if (!ObjectId.isValid(id)) throw 'invalid object ID';
+// const deletePost = async (id) => {
+//   if(!id) throw "no id is provided.";
+//   if(typeof id !== "string") throw "id is not of proper type.";
+//   if(id.trim() === "") throw "empty id or only contains spaces.";
+//   id = id.trim();
+//   if (!ObjectId.isValid(id)) throw 'invalid object ID';
 
-  const userCollection = await users();
+//   const userCollection = await users();
 
-  let post = {};
+//   let post = {};
   
-  try{
-    post = await userCollection.findOne({"posts._id": ObjectId.createFromHexString(id)});
-  }catch(e){
-    "could not find post";
-  }
-  try{
-  await userCollection.updateOne(
-    {_id: post._id},
-    {$pull: {posts: {_id:  ObjectId.createFromHexString(id)}}});
-  }catch(e){
-    throw "could not remove post";
-  }
+//   try{
+//     post = await userCollection.findOne({"posts._id": ObjectId.createFromHexString(id)});
+//   }catch(e){
+//     "could not find post";
+//   }
+//   try{
+//   await userCollection.updateOne(
+//     {_id: post._id},
+//     {$pull: {posts: {_id:  ObjectId.createFromHexString(id)}}});
+//   }catch(e){
+//     throw "could not remove post";
+//   }
 
-  const attendeePostCollection = await attendeePosts();
-  //FIXX LIKE ABOVE 
-  //const teamName = team.name//fidn the name of the team using this
-  const deletionInfo = await attendeePostCollection.findOneAndDelete({
-    _id: ObjectId.createFromHexString(id)
-    });
+//   const attendeePostCollection = await attendeePosts();
+//   //FIXX LIKE ABOVE 
+//   //const teamName = team.name//fidn the name of the team using this
+//   const deletionInfo = await attendeePostCollection.findOneAndDelete({
+//     _id: ObjectId.createFromHexString(id)
+//     });
 
-    if (!deletionInfo) {
-      throw `Could not delete post with id of ${id}`;
-    }
-return True;
-};
+//     if (!deletionInfo) {
+//       throw `Could not delete post with id of ${id}`;
+//     }
+// return true;
+// };
 
-export { createPost, updatePost,  deletePost};
+export { createPost};

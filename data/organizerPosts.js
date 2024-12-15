@@ -1,5 +1,6 @@
 import { organizerPosts } from '../config/mongoCollections.js';
 import { users } from '../config/mongoCollections.js';
+import {ObjectId} from 'mongodb';
 
 const createEvent = async (userName, photo, description, headCount, time, date, location, rsvpForm) => {
   if (!description && !photo) throw new Error('Post must include a description or photo');
@@ -58,7 +59,7 @@ const createEvent = async (userName, photo, description, headCount, time, date, 
     if(typeof rsvpForm !== 'string') throw "improper rsvp selection";
 
     rsvpForm = rsvpForm.trim();
-    if(rsvpForm !== "Yes" && rsvpForm !== "No") throw "improper rsvp form selection";
+    if(rsvpForm !== "yes" && rsvpForm !== "no") throw "improper rsvp form selection";
   }
   
   
@@ -88,10 +89,10 @@ const createEvent = async (userName, photo, description, headCount, time, date, 
   
   //const user = await userCollection.findOne({ username: userName });
   //user.posts.append(newEvent);
-  return True;
+  return true;
 };
 
-const updatePost = async (id, userName, photo, description, headCount, time, date, location, rsvpForm, comments, rating) => {
+const updatePost = async (id, userName, photo, description, headCount, time, date, location, rsvpForm) => {
   if(!id) throw "no id is provided.";
   if(typeof id !== "string") throw "id is not of proper type.";
   if(id.trim() === "") throw "empty id or only contains spaces.";
@@ -154,11 +155,11 @@ const updatePost = async (id, userName, photo, description, headCount, time, dat
     if(typeof rsvpForm !== 'string') throw "improper rsvp selection";
 
     rsvpForm = rsvpForm.trim();
-    if(rsvpForm !== "Yes" && rsvpForm !== "No") throw "improper rsvp form selection";
+    if(rsvpForm !== "yes" && rsvpForm !== "no") throw "improper rsvp form selection";
   }
 
-  if(!Array.isArray(comments)) throw "improper comments";
-  if(!Array.isArray(rating)) throw "improper comments";
+  //if(!Array.isArray(comments)) throw "improper comments";
+  //if(!Array.isArray(rating)) throw "improper comments";
 
 
   const update = {
@@ -170,9 +171,9 @@ const updatePost = async (id, userName, photo, description, headCount, time, dat
     date,
     location,
     rsvpForm,
-    createdAt: new Date(),
-    comments: comments,
-    rating: rating
+    createdAt: new Date()
+    //comments: comments,
+    //rating: rating
   }
 
   const organizerPostCollection = await organizerPosts();
@@ -222,7 +223,7 @@ const deletePost = async (id) => {
     if (!deletionInfo) {
       throw `Could not delete post with id of ${id}`;
     }
-return True;
+return true;
 };
 
 const getAllPost = async () => {
@@ -241,4 +242,63 @@ const getAllPost = async () => {
   return postsList;
 }
 
-export { createEvent, updatePost,  deletePost,  getAllPost};
+const addComment = async (id, userName, comment) =>{
+  if(!id) throw "no id is provided.";
+  if(typeof id !== "string") throw "id is not of proper type.";
+  if(id.trim() === "") throw "empty id or only contains spaces.";
+  id = id.trim();
+  if (!ObjectId.isValid(id)) throw 'invalid object ID';
+
+  if(!userName) throw "must provide username";
+  if(typeof userName !== 'string') throw "improper username";
+  userName = userName.trim().toLowerCase();
+  if(!userName) throw "must provide username";
+
+
+  if(!comment) throw "must provide comment";
+  if(typeof comment !== 'string') throw "improper comment";
+  comment = comment.trim().toLowerCase();
+  if(!comment) throw "must provide comment";
+
+  let post;
+
+  try{
+  const organizerPostCollection = await organizerPosts();
+  const updating = await organizerPostCollection.updateOne({_id: ObjectId.createFromHexString(id)}, {$push: {comments: comment}});
+  if (updating.matchedCount <= 0 || updating.modifiedCount <= 0) throw "could not upload comment";
+}catch(e){
+  throw "could not upload comment";
+}
+return true;
+
+}
+
+const addRate = async (id, userName, rate) =>{
+  if(!id) throw "no id is provided.";
+  if(typeof id !== "string") throw "id is not of proper type.";
+  if(id.trim() === "") throw "empty id or only contains spaces.";
+  id = id.trim();
+  if (!ObjectId.isValid(id)) throw 'invalid object ID';
+
+  if(!userName) throw "must provide username";
+  if(typeof userName !== 'string') throw "improper username";
+  userName = userName.trim().toLowerCase();
+  if(!userName) throw "must provide username";
+
+  if(!rate) throw "must provide rate";
+  if(!(/^\d+$/.test(rate))) throw "rate must be a number";
+
+
+
+  try{
+  const organizerPostCollection = await organizerPosts();
+  const updating = await organizerPostCollection.updateOne({_id: ObjectId.createFromHexString(id)}, {$push: {rating: Number(rate)}});
+  if (updating.matchedCount <= 0 || updating.modifiedCount <= 0) throw "could not upload comment";
+}catch(e){
+  throw "could not upload comment";
+}
+return true;
+
+}
+
+export{ createEvent, updatePost,  deletePost,  getAllPost, addComment, addRate};

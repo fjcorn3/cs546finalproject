@@ -8,8 +8,12 @@ const router = express.Router();
 const __dirname = path.resolve();
 
 router.use('/', userRoutes);
-router.use('/posts', attendeePostsRoutes);
-router.use('/events', organizerPostsRoutes);
+//router.use('/posts', attendeePostsRoutes);
+//router.use('/events', organizerPostsRoutes);
+//router.use('/create', organizerPostsRoutes);
+router.use('/', attendeePostsRoutes);
+router.use('/', organizerPostsRoutes);
+
 
 router.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'static/homePage.html'));

@@ -11,7 +11,7 @@ const logRequest = (req, res, next) => {
   );
   if (req.originalUrl === '/') {
     if (req.session.user) {
-      return req.session.user.role === 'organizer' ? res.redirect('/coordinatorProfile') : res.redirect('/eventPage');
+      return req.session.user.role === 'organizer' ? res.redirect('/coordinatorProfile/:username') : res.redirect('/eventPage');
     } else {
       res.sendFile(path.join(__dirname, 'static/homepage.html'));
       //return res.redirect('/signin');
@@ -23,14 +23,14 @@ const logRequest = (req, res, next) => {
 
 const signinRedirect = (req, res, next) => {
   if (req.session.user) {
-    return req.session.user.role === 'organizer' ? res.redirect('/coordinatorProfile') : res.redirect('/eventPage');
+    return req.session.user.role === 'organizer' ? res.redirect('/coordinatorProfile/:username') : res.redirect('/eventPage');
   }
   next();
 };
 
 const signupRedirect = (req, res, next) => {
   if (req.session.user) {
-    return req.session.user.role === 'organizer' ? res.redirect('/coordinatorProfile') : res.redirect('/eventPage');
+    return req.session.user.role === 'organizer' ? res.redirect('/coordinatorProfile/:username') : res.redirect('/eventPage');
   }
   next();
 };

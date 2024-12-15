@@ -8,8 +8,12 @@
 </head>
 <body>
   <h1>Events</h1>
-  <a id="smt" href="/posts/create">Create A Post</a>
+  <div id="profileOption" class="profileOption"></div>
+  <div id="link">
+    <a class="link" href="/reviewPage">Review Page</a>
+   </div>
   <div id="eventsList">
+    <div id="creating"></div>
     <!-- Dynamic event list goes here
      id for each il will be teh post objectid
      for deleting i will deletd the post then post the new updates -->
@@ -17,6 +21,6 @@
 
   </div>
   <a id="signoutLink" href="/signoutuser">Sign Out</a>
-  <script src="/public/js/main.js"></script>
+  <script type="module" src="/public/js/main.js"></script>
 </body>
 </html>
