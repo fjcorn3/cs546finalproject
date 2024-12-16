@@ -93,14 +93,15 @@ router.route('/create')
     let errors = [];
 
     //TODO: Validation
-    if(!validation.validName(name)) errors.push("Invalid Name");
-    if (typeof address !== 'string'){
+    if(!validation.validName(name)) errors.push("Invalid Name"); //name
+
+    if (typeof address !== 'string'){ //address
       throw "Error: Address must be of type String!";
     }
-    if (typeof description !== 'string'){
+    if (typeof description !== 'string'){ //description
       throw "Error: Description must be of type String!";
     }
-    if (!Array.isArray(tags)){
+    if (!Array.isArray(tags)){ //tags
       throw "Error: Tags must be an array!";
     }
     
@@ -128,13 +129,17 @@ router.route('/create')
       }
     });
 
-    if (typeof price !== 'number'){
+    if (typeof price !== 'number'){ //price
       throw "Error: Price must be a number!";
     }
 
-    if (typeof familyFriendly !== 'boolean'){
+    if (typeof familyFriendly !== 'boolean'){ //familyFriendly
       throw "Error: familyFriendly must be true or false!";
     }
+
+    if (!validation.validDate(date)) errors.push("Invalid date! Proper Format: YYYY-MM-DD"); //date
+    if (!validation.validTime(time)) errors.push("Invalid time! Proper format: HH:MM")
+      
     // if(!validation.validName(lastName)) errors.push("Invalid Last Name");
     // if(!validation.validUsername(username)) errors.push("Invalid User Name");
     // if(!validation.validPassword(password)) errors.push("Invalid Password");

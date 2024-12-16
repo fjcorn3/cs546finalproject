@@ -40,3 +40,29 @@ export const validAge = (age) => {
 
   return true;
 }
+
+export const ValidDate = (dateString) => {
+  const regex = /^\d{4}-\d{2}-\d{4}$/; //yyyy-mm-dd
+
+  if (!regex.test(dateString)) {
+      return false;
+  }
+
+  const [year, month, day] = dateString.split('-').map(Number);
+
+  const date = new Date(year, month - 1, day);
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+      return false;
+  }
+  return true;
+}
+
+export const ValidTime = (timeString) => {
+  const regex = /^([01]\d|2[0-3]):([0-5]\d)$/; //HH:MM 24 hr time
+
+  if (!regex.test(timeString)) {
+      return false;
+  }
+  return true;
+}
+
