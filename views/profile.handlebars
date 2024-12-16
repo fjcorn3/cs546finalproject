@@ -9,7 +9,22 @@
     <p>{{user.role}}</p>
     <p>{{user.age}}</p>
   </section>
+  {{#if organizer}}
   <section class="content-section">
     <h2>Events Posted</h2>
+    <div class="events-container">
+      {{#each eventsPosted}}
+      {{> event}}
+      {{/each}}
+    </div>
+  </section>
+  {{/if}}
+  <section class="content-section">
+    <h2>Events Favorited</h2>
+    <div class="events-container">
+      {{#each eventsFavorited}}
+      {{> event}}
+      {{/each}}
+    </div>
   </section>
 </div>

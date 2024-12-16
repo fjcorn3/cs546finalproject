@@ -1,4 +1,5 @@
 import Router from 'express';
+import { ObjectId } from 'mongodb';
 import * as eventData from '../data/events.js';
 import * as userData from '../data/users.js';
 import xss from 'xss';
@@ -46,6 +47,9 @@ router.route('/')
 // METHODS: GET, POST, PATCH
 router.route('/event/:id')
   .get(async (req, res) => {
+    if(!ObjectId.isValid(req.params.id)) {
+      return res.status(400).render('error', {title: "Error", signedIn: req.session.user ? true : false, message: "Invalid Event"});
+    }
 
     const event = await eventData.getEventById(req.params.id);
 
