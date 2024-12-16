@@ -1,8 +1,8 @@
 <header>
   <div class="header-content">
     <h1>Event Finder</h1>
-    <form class="search-form">
-      <input type="text" placeholder="Search for Event by Tags">
+    <form action="/events/search" method="POST" class="search-form">
+      <input type="text" placeholder="Search for Event by Tags" name="tag" required>
       <button type="submit">Search</button>
     </form>
   </div>
