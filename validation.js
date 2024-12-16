@@ -41,8 +41,17 @@ export const validAge = (age) => {
   return true;
 }
 
-export const ValidDate = (dateString) => {
-  const regex = /^\d{4}-\d{2}-\d{4}$/; //yyyy-mm-dd
+export const validEventName = (name) => {
+  if(typeof name !== 'string') return false;
+  name = name.trim();
+
+  if(name.length < 2 || name.length > 50 || /\d/.test(name)) return false;
+  
+  return true;
+};
+
+export const validDate = (dateString) => {
+  const regex = /^\d{4}-\d{2}-\d{2}$/; //yyyy-mm-dd
 
   if (!regex.test(dateString)) {
       return false;
@@ -57,8 +66,8 @@ export const ValidDate = (dateString) => {
   return true;
 }
 
-export const ValidTime = (timeString) => {
-  const regex = /^(0?[1-9]|1[0-2]):([0-5][0-9])\s?(AM|PM)$/i; //HH:MM 24 hr time
+export const validTime = (timeString) => {
+  const regex = /^([01][0-9]|2[0-3]):([0-5][0-9])$/;
 
   if (!regex.test(timeString)) {
       return false;

@@ -3,57 +3,54 @@ import { events, users } from '../config/mongoCollections.js';
 import * as validation from '../validation.js';
 
 export const createEvent = async (name, address, date, time, description, price, familyFriendly, tags, organizerId) => {
-  //TODO: Validation
-  if (!name || !address || !date || !time || !description || !price || familyFriendly == null || !tags) {
-    throw "Error: Atleast one input is missing!";
+  if(!validation.validEventName(name)) throw "Invalid Name"; //name
+
+  name = name.trim();
+
+  if (typeof address !== 'string'){ //address
+    throw "Error: Address must be of type String!";
   }
-  
-  if(!validation.validName(name)) errors.push("Invalid Name"); //name
-
-    if (typeof address !== 'string'){ //address
-      throw "Error: Address must be of type String!";
-    }
-    if (typeof description !== 'string'){ //description
-      throw "Error: Description must be of type String!";
-    }
-    if (!Array.isArray(tags)){ //tags
-      throw "Error: Tags must be an array!";
-    }
+  if (typeof description !== 'string'){ //description
+    throw "Error: Description must be of type String!";
+  }
+  if (!Array.isArray(tags)){ //tags
+    throw "Error: Tags must be an array!";
+  }
     
-    address = address.trim();
-    description = description.trim();
+  address = address.trim();
+  description = description.trim();
 
-    if (address.length === 0){
-      throw "Error: Address is empty!";
+  if (address.length === 0){
+    throw "Error: Address is empty!";
+  }
+  if (description.length === 0){
+    throw "Error: Description is empty!";
+  }
+
+  if (tags.length === 0){
+    throw "Error: Tags cannot be empty!";
+  }
+
+  tags.forEach(tag => {
+    if (typeof tag !== 'string'){
+      throw "Each tag in Tags must be of type string!";
     }
-    if (description.length === 0){
-      throw "Error: Description is empty!";
+    tag = tag.trim();
+    if (tag.length === 0){
+      throw "Error: Atleast one tag is empty!";
     }
+  });
 
-    if (tags.length === 0){
-      throw "Error: Tags cannot be empty!";
-    }
+  if (typeof price !== 'number'){ //price
+    throw "Error: Price must be a number!";
+  }
 
-    tags.forEach(tag => {
-      if (typeof tag !== 'string'){
-        throw "Each tag in Tags must be of type string!";
-      }
-      tag = tag.trim();
-      if (tag.length === 0){
-        throw "Error: Atleast one tag is empty!";
-      }
-    });
+  if (typeof familyFriendly !== 'boolean'){ //familyFriendly
+    throw "Error: familyFriendly must be true or false!";
+  }
 
-    if (typeof price !== 'number'){ //price
-      throw "Error: Price must be a number!";
-    }
-
-    if (typeof familyFriendly !== 'boolean'){ //familyFriendly
-      throw "Error: familyFriendly must be true or false!";
-    }
-
-    if (!validation.validDate(date)) errors.push("Invalid date! Proper Format: YYYY-MM-DD"); //date
-    if (!validation.validTime(time)) errors.push("Invalid time! Proper format: HH:MM")
+  if (!validation.validDate(date)) throw "Invalid date! Proper Format: YYYY-MM-DD";
+  if (!validation.validTime(time)) throw "Invalid time! Proper format: HH:MM";
 
   let event = {
     name,
@@ -130,6 +127,7 @@ export const updateEventAttendees = async (eventId, userId) => {
   eventId = new ObjectId(eventId);
   userId = new ObjectId(userId);
 
+  const eventCollection = await events();
   const event = await eventCollection.findOneAndUpdate({_id: eventId}, {$push: {attendees: userId}});
   return event;
 };
