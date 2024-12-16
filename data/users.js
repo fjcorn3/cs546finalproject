@@ -32,7 +32,7 @@ export const createUser = async (firstName, lastName, username, email, role, pho
     phoneNumber,
     age,
     password: hashPassword,
-    eventPosted: [],
+    eventsPosted: [],
     eventsFavorited: [],
   };
 
@@ -40,7 +40,7 @@ export const createUser = async (firstName, lastName, username, email, role, pho
   const user = await userCollection.findOne({ username: username });
 
   if(user) {
-    throw new Error("You are already a user, you can't sign up.");
+    throw new Error("User Name Taken");
   }
 
   const insertInfo = await userCollection.insertOne(newUser);

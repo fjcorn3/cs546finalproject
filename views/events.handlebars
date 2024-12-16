@@ -11,8 +11,18 @@
     <section class="content-section">
     {{#if organizer}}
       <h2>Events Posted</h2>
+      <div class="events-container">
+        {{#each eventsPosted}}
+          {{> event}}
+        {{/each}}
+      </div>
     {{else}}
       <h2>Favorite Events</h2>
+      <div class="events-container">
+        {{#each eventsFavorited}}
+          {{> event}}
+        {{/each}}
+      </div>
     {{/if}}
     </section>
   {{/if}}

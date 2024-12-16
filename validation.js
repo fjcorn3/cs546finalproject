@@ -31,17 +31,6 @@ export const validPassword = (password) => {
   return true;
 }
 
-export const validColor = (color) => {
-  if(typeof color !== 'string') return false;
-
-  color = color.trim();
-  const colorRegex = /^#[a-fA-F0-9]{6}$/g;
-
-  if(!colorRegex.test(color)) return false;
-
-  return true;
-}
-
 export const validAge = (age) => {
   age = parseInt(age);
 

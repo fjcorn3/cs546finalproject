@@ -1,7 +1,9 @@
-import { events } from '../config/mongoCollections.js';
+import { ObjectId } from 'mongodb';
+import { events, users } from '../config/mongoCollections.js';
 import * as validation from '../validation.js';
 
 export const createEvent = async (name, address, date, time, description, price, familyFriendly, tags, organizerId) => {
+  //TODO: Validation
 
   let event = {
     name,
@@ -15,7 +17,7 @@ export const createEvent = async (name, address, date, time, description, price,
     organizer: organizerId,
     comments: [],
     attendees: [],
-    rating: 0
+    likes: 0
   }
 
   const eventCollection = await events();
@@ -23,12 +25,17 @@ export const createEvent = async (name, address, date, time, description, price,
 
   if(!insertionInfo.acknowledged) throw Error('Insertion Failed');
 
+  const userCollection = await users();
+  const user = await userCollection.updateOne({_id: organizerId}, {$push: {eventsPosted: insertionInfo.insertedId}})
+
   const newEvent = await eventCollection.findOne({_id: insertionInfo.insertedId});
 
   return newEvent;
 };
 
 export const updateEventComments = async (eventId, userId, text) => {
+  //TODO: Validation
+
   const eventCollection = await events();
   const event = await eventCollection.findOneAndUpdate({_id: eventId}, {$push: {comments: {userId, text}}});
 
@@ -36,15 +43,19 @@ export const updateEventComments = async (eventId, userId, text) => {
 };
 
 export const updateEventAttendees = async (eventId, userId) => {
+  //TODO: Validation
+
   const eventCollection = await events();
 
   const event = await eventCollection.findOneAndUpdate({_id: eventId}, {$push: {attendees: userId}});
   return event;
 };
 
-export const updateEventRatings = async (eventId) => {
+export const updateEventLikes = async (eventId) => {
+  //TODO: Validation
+
   const eventCollection = await events();
-  const events = await eventCollection.findOneAndUpdate({_id: eventId}, {$inc: {eventRatings}});
+  const events = await eventCollection.findOneAndUpdate({_id: eventId}, {$inc: {likes}});
 };
 
 export const getEvents = async () => {
@@ -52,6 +63,17 @@ export const getEvents = async () => {
   const eventList = await eventCollection.find({}).limit(5).toArray();
 
   return eventList;
+}
+
+export const getEventById = async (eventId) => {
+  //TODO: Validation
+
+  const eventCollection = await events();
+  const event = await eventCollection.findOne({_id: eventId});
+
+  if(!event) throw Error('Event Not Found');
+
+  return event;
 }
 
 export const getEventsByTag = async (tag) => {

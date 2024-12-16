@@ -1,21 +1,22 @@
-<a href="/events/event/{{_id}}">
-  <div class="event">
-    <h3>{{name}}</h3>
-    <dl>
-      <dt>{{date}}</dd>
-      <dt>{{time}}</dd>
-      <dt>${{price}}</dd>
-    </dl>
-    <p>{{description}}</p>
+<div class="event">
+  <a href="/events/event/{{_id}}">
+  <h3>{{name}}</h3>
+  </a>
+  <dl>
+    <dt>{{date}}</dt>
+    <dt>{{time}}</dt>
+    <dt>${{price}}</dt>
+  </dl>
+  <p>{{description}}</p>
 
-    <form action="/" method="post">
-      <button name="foo" value="rsvp">RSVP</button>
-    </form>
-  </div>
-</a>
+  <form action="/events" method="post">
+    <button name="foo" value="rsvp">RSVP</button>
+  </form>
+  <form action="/events" method="post">
+    <button name="foo" value="rsvp">Like</button>
+  </form>
 
-
-
-
-
-
+  <form action="/events" method="post">
+    <button name="foo" value="rsvp">Favorite</button>
+  </form>
+</div>

@@ -13,8 +13,8 @@ router.route('/')
       organizer = req.session.user.role === 'organizer';
     }
 
-    const events = eventData.getEvents();
-    res.render('events', {title: "Events", signedIn: req.session.user ? true : false, organizer: organizer, events: events});
+    const events = await eventData.getEvents();
+    res.render('events', {title: "Events", signedIn: req.session.user ? true : false, organizer: organizer, events});
   });
   // .post(async (req, res) => {
   //   let {} = req.body;
@@ -30,7 +30,9 @@ router.route('/')
 // METHODS: GET, POST 
 router.route('/event/:id')
   .get(async (req, res) => {
-    res.render('event', {title: "Event", signedIn: req.session.user ? true : false});
+
+    const event = await eventData.getEventById(req.params.id);
+    res.render('event', {title: "event", signedIn: req.session.user ? true : false}, event);
   });
 
 export default router;
