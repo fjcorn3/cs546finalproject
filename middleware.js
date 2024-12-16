@@ -18,7 +18,7 @@ export const logRequest = (req, res, next) => {
 
 export const unauthenticatedRedirect = (req, res, next) => {
   if(!req.session.user) {
-    res.redirect('/signin');
+    return res.redirect('/signin');
   }
 
   next();
@@ -26,7 +26,7 @@ export const unauthenticatedRedirect = (req, res, next) => {
 
 export const authenticatedRedirect = (req, res, next) => {
   if(req.session.user) {
-    res.redirect('/home');
+    return res.redirect('/home');
   }
   next();
 };

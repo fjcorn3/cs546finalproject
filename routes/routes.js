@@ -1,13 +1,16 @@
 import Router from 'express';
 import * as validation from '../validation.js';
 import * as userData from '../data/users.js';
+import * as eventData from '../data/events.js';
 
 const router = Router();
 
 // ROUTE: /home
 // METHODS: GET
 router.route('/home').get(async (req, res) => {
-  res.render('home', {title: "Home", signedIn: req.session.user ? true : false});
+
+  const events = await eventData.getEvents();
+  res.render('home', {title: "Home", signedIn: req.session.user ? true : false, events});
 });
 
 
@@ -96,14 +99,18 @@ router.route('/signup')
   });
 
 
-// ROUTE: /events
-// METHODS: GET, POST
-router.route('/events')
-  .get(async (req, res) => {
-    res.render('events', {title: "Events", signedIn: req.session.user ? true : false});
-  })
-  .post(async (req, res) => {
-    res.render('events', {title: "Events"});
-  });
+  
 
+// ROUTE: /profile
+// METHODS: GET, PATCH
+router.route('/profile')
+  .get(async (req, res) => {
+    let organizer = false;
+
+    if(req.session.user) {
+      organizer = req.session.user.role === 'organizer';
+    }
+
+    res.render('events', {title: "Events", signedIn: req.session.user ? true : false, organizer: organizer});
+  })
 export default router;

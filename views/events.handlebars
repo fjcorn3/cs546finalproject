@@ -1,24 +1,18 @@
 <div class="content">
   <section class="content-section">
     <h2>Events</h2>
-    <div id="profileOption" class="profileOption"></div>
-    <div id="link">
-      <a class="link" href="/reviewPage">Review Page</a>
-      </div>
-    <div id="eventsList">
-      <div id="creating"></div>
-      <!-- Dynamic event list goes here
-        id for each il will be teh post objectid
-        for deleting i will deletd the post then post the new updates -->
-        <ol id="eventList"></ol>
+    <div class="events-container" id="events-container">
+      {{#each events}}
+        {{> event}}
+      {{/each}}
     </div>
   </section>
   {{#if signedIn}}
     <section class="content-section">
-    {{#if attendee}}
-      <h2>Favorite Events</h2>
-    {{else}}
+    {{#if organizer}}
       <h2>Events Posted</h2>
+    {{else}}
+      <h2>Favorite Events</h2>
     {{/if}}
     </section>
   {{/if}}

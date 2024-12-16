@@ -1,10 +1,10 @@
 <header>
   <div class="header-content">
     <h1>Event Finder</h1>
-    {{!-- <form>
-      <input type="text">
+    <form class="search-form">
+      <input type="text" placeholder="Search for Event by Keyword">
       <button type="submit">Search</button>
-    </form> --}}
+    </form>
   </div>
   <nav>
     <a class="nav-item" href="/home">Home</a>
@@ -12,6 +12,7 @@
 
     <span class="nav-right">
       {{#if signedIn}}
+      <a class="nav-item" href="/profile">Profile</a>
       <a class="nav-item" href="/signout">Sign Out</a>
       {{else}}
       <a class="nav-item" href="/signup">Sign Up</a>

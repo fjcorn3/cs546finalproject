@@ -2,8 +2,34 @@
   <section class="content-section">
     <h2>Welcome To Our Website!</h2>
     <p>Event Finder aims to help you engage with your community!</p>
+
+    <p>The website purpose of this website is to aid users in finding local events along with allowing
+      local coordinators of these events to share them with the community. Our community event
+      social media web application allows for easy communication between event organizers and
+      attendees through discovering, sharing, and managing events.</p>
+
+    <p>This website is intended for users who would like to discover events or recreational activities in
+      the city they are in or a city they are visiting. A user can view the posts made by event
+      coordinators and a user can post about an event themselves. A user can also interact with a post
+      made by an event coordinator by liking, rating, and commenting on it. The user can also RSVP
+      to an event if the coordinator decides to allow for that action.</p>
+
+    <p>This website is also intended for event coordinators who would like to share an event that they
+      are holding with their local community. An event coordinator can add specific information about
+      the event to attract users such as to whether it is virtual or in person, headcount, time, and cost.
+      The event coordinator also has the option to add an RSVP option so that users can quickly sign
+      up for the event.</p>
+
+    <p>The objective of this website is to allow for seamless searching, communication, and sharing
+      concerning local events between users who are looking for a local activity and coordinators who
+      would like to promote and bring awareness to their event.</p>
   </section>
   <section class="content-section">
-    <h2>Recent Events</h2>
+    <h2>Trending Events</h2>
+    <div class="events-container" id="events-container">
+      {{#each events}}
+      {{> event}}
+      {{/each}}
+    </div>
   </section>
 </div>

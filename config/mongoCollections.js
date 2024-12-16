@@ -17,5 +17,4 @@ const getCollectionFn = (collection) => {
 
 /* Now, you can list your collections here: */
 export const users = getCollectionFn('users');
-export const organizerPosts = getCollectionFn('organizerPosts');
-export const attendeePosts = getCollectionFn('attendeePosts');
+export const events = getCollectionFn('events');
