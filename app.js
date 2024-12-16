@@ -26,6 +26,7 @@ app.use(
 app.use(middleware.logRequest);
 app.use('/signout', middleware.unauthenticatedRedirect);
 app.use('/events', middleware.unauthenticatedRedirect);
+app.use('/profile', middleware.unauthenticatedRedirect);
 app.use('/signin', middleware.authenticatedRedirect);
 app.use('/signup', middleware.authenticatedRedirect);
 

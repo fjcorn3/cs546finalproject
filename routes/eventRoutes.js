@@ -49,6 +49,8 @@ router.route('/event/:id')
 
     const event = await eventData.getEventById(req.params.id);
 
+    event.organizer = await userData.getUserById(event.organizer);
+
     // Get Usernames of commenters
     for(let i = 0; i < event.comments.length; i++) {
       event.comments[i].username = (await userData.getUserById(event.comments[i].userId)).username;

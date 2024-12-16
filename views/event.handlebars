@@ -7,6 +7,8 @@
     <p>{{event.time}}</p>
     <p>{{event.price}}</p>
     <p>{{event.description}}</p>
+    <a href="/profile/{{event.organizer._id}}">{{event.organizer.username}}</a>
+
     {{event.likes}}
     <form action="/events" method="post">
       <button name="foo" value="rsvp">RSVP</button>
