@@ -180,6 +180,7 @@ router.route('/search')
 router.post('/like', async (req, res) => {
   try {
       let { eventId } = req.body;
+      let userId = req.session.user._id;
 
       console.log("Request received with eventId:", eventId); // Debug: Log input
 
@@ -196,10 +197,19 @@ router.post('/like', async (req, res) => {
       const eventCollection = await events();
       console.log("Connected to the events collection"); // Debug: Collection connection
       eventId = new ObjectId(eventId)
+      
+      let event = await eventCollection.findOne({_id: eventId});
+      if (!event){
+        return res.status(404).json({ error: "Event Not Found" });
+      }
+      if (event.likedBy.includes(userId)){
+        return res.status(400).json({ error: "You have already liked this event" });
+      }
       // Increment likes for the event
       const updatedEvent = await eventCollection.findOneAndUpdate(
           { _id: eventId },
-          { $inc: { likes: 1 } },
+          { $inc: { likes: 1 },
+          $addToSet: {likedBy: userId} },
           { returnDocument: "after" }
       );
      

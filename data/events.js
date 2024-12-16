@@ -64,7 +64,8 @@ export const createEvent = async (name, address, date, time, description, price,
     organizer: organizerId,
     comments: [],
     attendees: [],
-    likes: 0
+    likes: 0,
+    likedBy: []
   }
 
   const eventCollection = await events();
