@@ -1,17 +1,15 @@
-<h2>Profile</h2>
-<div id="profileDetails">
-  <!-- Dynamic profile details go here -->
-    <div id="link">
-    <a class="link" href="/eventPage">Event Page</a>
-    </div>
-    <div id="link">
-    <a class="link" href="/reviewPage">Review Page</a>
-    </div>
+<div class="content">
+  <section class="content-section">
+    <h2>Profile</h2>
+
+    <p>{{user.username}}</p>
+    <p>{{user.email}}</p>
+    <p>{{user.phoneNumber}}</p>
+    <p>{{user.firstName}} {{user.lastName}}</p>
+    <p>{{user.role}}</p>
+    <p>{{user.age}}</p>
+  </section>
+  <section class="content-section">
+    <h2>Events Posted</h2>
+  </section>
 </div>
-<div id="OrganizerEvents">
-  <h2>Organizer Events</h2>
-  <!-- Upcoming events list -->
-    <ol id="eventList"></ol>
-</div>
-<a id="signoutLink" href="/signoutuser">Sign Out</a>
-<script type="module" src="/public/js/main.js"></script>

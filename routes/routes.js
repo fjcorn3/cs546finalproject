@@ -106,11 +106,11 @@ router.route('/signup')
 router.route('/profile')
   .get(async (req, res) => {
     let organizer = false;
-
+    const user = req.session.user;
     if(req.session.user) {
       organizer = req.session.user.role === 'organizer';
     }
 
-    res.render('events', {title: "Events", signedIn: req.session.user ? true : false, organizer: organizer});
+    res.render('profile', {title: "Profile", signedIn: req.session.user ? true : false, organizer: organizer, user});
   })
 export default router;
