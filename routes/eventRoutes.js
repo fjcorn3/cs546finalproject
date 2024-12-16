@@ -81,7 +81,7 @@ router.route('/create')
   .post(async (req, res) => {
     let { name, address, date, time, description, price, familyFriendly, tags} = req.body;
 
-    if (!name || !address || !date || !time || !description || !price || !familyFriendly || !tags) {
+    if (!name || !address || !date || !time || !description || !price || familyFriendly == null || !tags) {
       return res.status(400).render('createEvent', {title: "Create Event", signedIn: req.session.user ? true : false, error: "Must Fill Out Form"});
     }
 
@@ -89,6 +89,47 @@ router.route('/create')
 
     //TODO: Validation
     if(!validation.validName(name)) errors.push("Invalid Name");
+    if (typeof address !== 'string'){
+      throw "Error: Address must be of type String!";
+    }
+    if (typeof description !== 'string'){
+      throw "Error: Description must be of type String!";
+    }
+    if (!Array.isArray(tags)){
+      throw "Error: Tags must be an array!";
+    }
+    
+    address = address.trim();
+    description = description.trim();
+
+    if (address.length === 0){
+      throw "Error: Address is empty!";
+    }
+    if (description.length === 0){
+      throw "Error: Description is empty!";
+    }
+
+    if (tags.length === 0){
+      throw "Error: Tags cannot be empty!";
+    }
+
+    tags.forEach(tag => {
+      if (typeof tag !== 'string'){
+        throw "Each tag in Tags must be of type string!";
+      }
+      tag = tag.trim();
+      if (tag.length === 0){
+        throw "Error: Atleast one tag is empty!";
+      }
+    });
+
+    if (typeof price !== 'number'){
+      throw "Error: Price must be a number!";
+    }
+
+    if (typeof familyFriendly !== 'boolean'){
+      throw "Error: familyFriendly must be true or false!";
+    }
     // if(!validation.validName(lastName)) errors.push("Invalid Last Name");
     // if(!validation.validUsername(username)) errors.push("Invalid User Name");
     // if(!validation.validPassword(password)) errors.push("Invalid Password");
