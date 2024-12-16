@@ -36,11 +36,7 @@ export const authenticateOrganizer = (req, res, next) => {
     return res.redirect('/signin');
   }
   if (req.session.user.role !== 'organizer') {
-    return res.status(403).render('error', {
-      errorMessage: 'Access Denied. You do not have permission to view this page.',
-      title: 'Error',
-      userPageLink: '/eventPage',
-    });
+    return res.status(400).render('error', {title: 'Error', signedIn: req.session.user ? true : false, message: 'Access Denied. You do not have permission to view this page.'});
   }
   next();
 };

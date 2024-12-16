@@ -45,11 +45,20 @@ router.route('/:id')
     let organizer = false;
 
     const user = await userData.getUserById(req.params.id);
+    let eventsPosted = [];
+    let eventsFavorited = [];
 
-    if(req.session.user) {
-      organizer = req.session.user.role === 'organizer';
+    if(user.role === 'organizer') {
+      organizer = true;
+      for(let i = 0; i < user.eventsPosted.length; i++) {
+        eventsPosted.push(await eventData.getEventById(user.eventsPosted[i]));
+      }
+    }
+    // Getting Events attended by user if they are an attendee 
+    for(let i = 0; i < user.eventsFavorited.length; i++) {
+      eventsPosted.push(await eventData.getEventById(user.eventsFavorited[i]));
     }
 
-    res.render('profile', {title: "Profile", signedIn: req.session.user ? true : false, organizer: organizer, user});
+    res.render('profile', {title: "Profile", signedIn: req.session.user ? true : false, organizer: organizer, user, eventsFavorited, eventsPosted});
 });
 export default router;

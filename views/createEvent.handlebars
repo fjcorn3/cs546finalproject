@@ -2,31 +2,66 @@
   <div id="error" class="error" {{#unless error}} hidden {{/unless}}>
     <span id="error-message"> {{#if error}} {{error}} {{/if}} </span>
   </div>
-  <label for="description">Description:</label>
-  <textarea id="description" name="description"></textarea>
 
-  <label for="photo">Photo URL:</label>
-  <input type="text" id="photo" name="photo">
-
-  <label for="headCount">Head Count:</label>
-  <input type="number" id="headCount" name="headCount">
-
-  <label for="time">Time:</label>
-  <input type="time" id="time" name="time">
+  <label for="name">Name:</label>
+  <input id="name" name="name" required>
 
   <label for="date">Date:</label>
-  <input type="date" id="date" name="date">
+  <input type="date" id="date" name="date" required>
 
-  <label for="location">Location:</label>
-  <input type="text" id="location" name="location">
+  <label for="time">Time:</label>
+  <input type="time" id="time" name="time" required>
 
-  <label for="rsvpForm">RSVP Form:</label>
-  <select id="rsvpForm" name="rsvpForm" required>
-    <option value="yes">Yes</option>
-    <option value="no">No</option>
+  <label for="address">Address:</label>
+  <input type="text" id="address" name="address" required>
+
+  <label for="price">Price:</label>
+  <input type="number" id="price" name="price" required>
+
+  <label for="description">Description:</label>
+  <textarea id="description" name="description" required></textarea>
+
+  <label for="familyFriendly">Family Friendly:</label>
+  <select id="familyFriendly" name="familyFriendly" required>
+    <option value="true">Yes</option>
+    <option value="false">No</option>
+  </select>
+
+  <label for="tags">Tags:</label>
+  <select id="tags" name="tags">
+    <option value="music">music</option>
+    <option value="pop">pop</option>
+    <option value="outdoors">outdoors</option>
+    <option value="family">family</option>
+    <option value="picnic">picnic</option>
+    <option value="art">art</option>
+    <option value="culture">culture</option>
+    <option value="walking tour">walking tour</option>
+    <option value="food">food</option>
+    <option value="festival">festival</option>
+    <option value="movies">movies</option>
+    <option value="reading">reading</option>
+    <option value="fair">fair</option>
+    <option value="jazz">jazz</option>
+    <option value="luxury">luxury</option>
+    <option value="animals">animals</option>
+    <option value="zoo">zoo</option>
+    <option value="gallery">gallery</option>
+    <option value="beach">beach</option>
+    <option value="history">history</option>
+    <option value="nature">nature</option>
+    <option value="plants">plants</option>
+    <option value="fitness">fitness</option>
+    <option value="yoga">yoga</option>
+    <option value="relaxation">relaxation</option>
+    <option value="science">science</option>
+    <option value="education">education</option>
+    <option value="street food">street food</option>
+    <option value="market">market</option>
+    <option value="shopping">shopping</option>
+    <option value="local">local</option>
   </select>
 
   <button type="submit">Create Event</button>
-  <a href="/eventPage">Go Back</a>
 </form>
 <script type="module" src="/public/js/validate_event.js"></script>

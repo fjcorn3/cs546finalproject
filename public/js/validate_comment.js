@@ -2,6 +2,18 @@ let commentForm = document.getElementById('commentForm');
 let error = document.getElementById('error');
 let errorMessage = document.getElementById('error-message');
 
+let rsvpButton = document.getElementById('rsvpButton');
+let likeButton = document.getElementById('likeButton');
+let favoriteButton = document.getElementById('favoriteButton');
+
+
+rsvpButton.addEventListener('click', (event) => {
+
+});
+
+
+
+
 if(commentForm) {
   commentForm.addEventListener('submit', (e) => {
     e.preventDefault();
