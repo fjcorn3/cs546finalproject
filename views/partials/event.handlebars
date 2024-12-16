@@ -12,8 +12,6 @@
     <span>{{this}}</span>
     {{/each}}
     </p>
-
-  {{#unless organizer}}
   <form action="/events" method="post">
     <button name="foo" value="rsvp">RSVP</button>
   </form>
@@ -24,5 +22,4 @@
   <form action="/events" method="post">
     <button name="foo" value="rsvp">Favorite</button>
   </form>
-  {{/unless}}
 </div>

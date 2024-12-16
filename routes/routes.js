@@ -11,7 +11,16 @@ const router = Router();
 router.route('/home').get(async (req, res) => {
 
   const events = await eventData.getEvents();
-  res.render('home', {title: "Home", signedIn: req.session.user ? true : false, events});
+
+  let signedIn = false;
+  let organizer = false;
+
+  if(req.session.user) {
+    signedIn = true;
+    organizer = req.session.user.role === 'organizer';
+  }
+
+  res.render('home', {title: "Home", signedIn, organizer, events});
 });
 
 
