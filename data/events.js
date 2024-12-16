@@ -124,7 +124,7 @@ export const getEventById = async (eventId) => {
   if (length(eventId) == 0){
     throw "Error: EventId cannot just be spaces!";
   }
-  
+
   eventId = new ObjectId(eventId);
 
   const eventCollection = await events();
@@ -136,6 +136,18 @@ export const getEventById = async (eventId) => {
 }
 
 export const getEventsByTag = async (tag) => {
+  if (!tag){
+    throw "Error: Tag must be provided!";
+  }
+  if (typeof tag !== 'string'){
+    throw "Error: Tag must be a string!";
+  }
+
+  tag = tag.trim();
+  if (length(tag) == 0){
+    throw "Error: Tag must not be just spaces!";
+  }
+  
   const eventCollection = await events();
 
   const eventsFound = await eventCollection.find({tags: tag}).toArray();
