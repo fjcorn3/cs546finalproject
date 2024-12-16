@@ -58,7 +58,7 @@ export const ValidDate = (dateString) => {
 }
 
 export const ValidTime = (timeString) => {
-  const regex = /^([01]\d|2[0-3]):([0-5]\d)$/; //HH:MM 24 hr time
+  const regex = /^(0?[1-9]|1[0-2]):([0-5][0-9])\s?(AM|PM)$/i; //HH:MM 24 hr time
 
   if (!regex.test(timeString)) {
       return false;
