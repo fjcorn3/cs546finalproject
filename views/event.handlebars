@@ -5,8 +5,13 @@
     <h2>{{event.name}}</h2>
     <p>{{event.date}}</p>
     <p>{{event.time}}</p>
-    <p>{{event.price}}</p>
+    <p>${{event.price}}</p>
     <p>{{event.description}}</p>
+    <br>tags:
+    {{#each event.tags}}
+    <span>{{this}}</span>
+    {{/each}}
+    <br>
     <a href="/profile/{{event.organizer._id}}">{{event.organizer.username}}</a>
     <br>
     <br>

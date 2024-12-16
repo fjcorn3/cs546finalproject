@@ -6,6 +6,12 @@
     <p>{{time}}</p>
     <p>${{price}}</p>
     <p>{{description}}</p>
+    <p>
+      tags:
+    {{#each tags}}
+    <span>{{this}}</span>
+    {{/each}}
+    </p>
 
   {{#unless organizer}}
   <form action="/events" method="post">
