@@ -2,6 +2,7 @@ import Router from 'express';
 import * as validation from '../validation.js';
 import * as userData from '../data/users.js';
 import * as eventData from '../data/events.js';
+import xss from 'xss';
 
 const router = Router();
 
@@ -83,6 +84,10 @@ router.route('/signup')
     if(errors.length !== 0) {
       return res.status(400).render('signup', {title: "Sign Up", error: errors.join(', ')});
     }
+
+    firstName = xss(firstName);
+    lastName = xss(lastName);
+    username = xss(username);
 
     try{
       const user = await userData.createUser(firstName, lastName, username, email, role, phoneNumber, age, password);
