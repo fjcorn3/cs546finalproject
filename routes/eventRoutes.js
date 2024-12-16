@@ -35,7 +35,7 @@ router.route('/')
       res.render('events', {title: "Events", signedIn: req.session.user ? true : false, organizer: organizer, events, eventsRole});
     }
     catch(e) {
-      res.render('error', {title: "Error", signedIn: req.session.user ? true : false, message: e.message});
+      res.status(500).render('error', {title: "Error", signedIn: req.session.user ? true : false, message: e.message});
     }
   });
 
@@ -147,6 +147,9 @@ router.route('/create')
     if(errors.length !== 0) {
       return res.status(400).render('createEvent', {title: "Create Event", signedIn: req.session.user ? true : false, error: errors.join(', ')});
     }
+
+    name = xss(name);
+    description = xss(description);
 
     try{
       const event = await eventData.createEvent(firstName, lastName, username, email, role, phoneNumber, age, password, req.session.user._id);
