@@ -19,11 +19,15 @@
   </section>
   <section class="content-section">
     <h2>Comments</h2>
-    <form action="/comments" id="commentForm" method="POST">
+    <form action="" id="commentForm" method="POST">
+      <div id="error" class="error" {{#unless error}} hidden {{/unless}}>
+        <span id="error-message"> {{#if error}} {{error}} {{/if}} </span>
+      </div>
       <label for="comment">Comment:</label>
-      <textarea id="comment" name="comment"></textarea>
+      <textarea id="comment" name="comment" required></textarea>
       <button type="submit">Create Comment</button>
     </form>
+    <script src="/public/js/validate_comment.js"></script>
     <div class="comments-container">
       {{#each event.comments}}
       {{> comment}}

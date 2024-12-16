@@ -4,7 +4,6 @@ let postFormAttendee = document.getElementById('createAttendeePostForm');
 let eventsList = document.getElementById('eventsList');
 let coordinatorProfile = document.getElementById('OrganizerEvents');
 let reviewList = document.getElementById('reviewsList');
-let commentForm = document.getElementById('commentForm');
 let rateForm = document.getElementById('rateForm');
 
 
@@ -16,6 +15,8 @@ let eventsContainer = document.getElementById('event-container');
 if(eventsContainer) {
   const events = await fetch('/api/events');
 }
+
+
 
 //add a get element by id for event page and add an add new function that adds iems from post database that have not been inserted. to do this you can add anothe atrribute with inserted: true/false
   

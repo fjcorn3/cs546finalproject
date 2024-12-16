@@ -36,7 +36,11 @@ export const createEvent = async (name, address, date, time, description, price,
 export const updateEventComments = async (eventId, userId, text) => {
   //TODO: Validation
 
+  eventId = new ObjectId(eventId);
+  userId = new ObjectId(userId);
+
   const eventCollection = await events();
+
   const event = await eventCollection.findOneAndUpdate({_id: eventId}, {$push: {comments: {userId, text}}});
 
   return event;
@@ -46,6 +50,9 @@ export const updateEventAttendees = async (eventId, userId) => {
   //TODO: Validation
 
   const eventCollection = await events();
+
+  eventId = new ObjectId(eventId);
+  userId = new ObjectId(userId);
 
   const event = await eventCollection.findOneAndUpdate({_id: eventId}, {$push: {attendees: userId}});
   return event;

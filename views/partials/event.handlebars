@@ -2,12 +2,10 @@
   <a href="/events/event/{{_id}}">
   <h3>{{name}}</h3>
   </a>
-  <dl>
-    <dt>{{date}}</dt>
-    <dt>{{time}}</dt>
-    <dt>${{price}}</dt>
-  </dl>
-  <p>{{description}}</p>
+    <p>{{date}}</p>
+    <p>{{time}}</p>
+    <p>${{price}}</p>
+    <p>{{description}}</p>
 
   <form action="/events" method="post">
     <button name="foo" value="rsvp">RSVP</button>

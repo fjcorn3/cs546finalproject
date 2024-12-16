@@ -1,6 +1,7 @@
 import Router from 'express';
 import * as eventData from '../data/events.js';
 import * as userData from '../data/users.js';
+import xss from 'xss';
 
 const router = Router();
 
@@ -47,6 +48,20 @@ router.route('/event/:id')
   .get(async (req, res) => {
 
     const event = await eventData.getEventById(req.params.id);
+
+    // Get Usernames of commenters
+    for(let i = 0; i < event.comments.length; i++) {
+      event.comments[i].username = (await userData.getUserById(event.comments[i].userId)).username;
+    }
+
+    res.render('event', {title: "Event", signedIn: req.session.user ? true : false, event});
+  })
+  .post(async (req, res) => {
+    let { comment } = req.body;
+
+    comment = xss(comment);
+
+    const event = await eventData.updateEventComments(req.params.id, req.session.user._id, comment);
 
     // Get Usernames of commenters
     for(let i = 0; i < event.comments.length; i++) {

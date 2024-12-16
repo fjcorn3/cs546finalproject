@@ -1,4 +1,6 @@
 let commentForm = document.getElementById('commentForm');
+let error = document.getElementById('error');
+let errorMessage = document.getElementById('error-message');
 
 if(commentForm) {
   commentForm.addEventListener('submit', (e) => {

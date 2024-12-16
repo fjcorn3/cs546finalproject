@@ -3,34 +3,34 @@
     <span id="error-message"> {{#if error}} {{error}} {{/if}} </span>
   </div>
   <label for="firstName">First Name:</label>
-  <input type="text" id="firstName" name="firstName">
+  <input type="text" id="firstName" name="firstName" required>
   
   <label for="lastName">Last Name:</label>
-  <input type="text" id="lastName" name="lastName">
+  <input type="text" id="lastName" name="lastName" required>
   
   <label for="username">Username:</label>
-  <input type="text" id="username" name="username">
+  <input type="text" id="username" name="username" required>
   
   <label for="email">Email:</label>
-  <input type="email" id="email" name="email">
+  <input type="email" id="email" name="email" required>
   
   <label for="role">Role:</label>
-  <select id="role" name="role">
+  <select id="role" name="role" required>
     <option value="organizer">organizer</option>
     <option value="attendee">attendee</option>
   </select>
   
   <label for="phoneNumber">Phone Number:</label>
-  <input type="tel" id="phoneNumber" name="phoneNumber">
+  <input type="tel" id="phoneNumber" name="phoneNumber" required>
   
   <label for="age">Age:</label>
-  <input type="number" id="age" name="age">
+  <input type="number" id="age" name="age" required>
   
   <label for="password">Password:</label>
-  <input type="password" id="password" name="password">
+  <input type="password" id="password" name="password" required>
   
   <label for="confirmPassword">Confirm Password:</label>
-  <input type="password" id="confirmPassword" name="confirmPassword">
+  <input type="password" id="confirmPassword" name="confirmPassword" required>
   <button type="submit">Sign Up</button>
   <br>
   <br>
