@@ -88,7 +88,7 @@ router.route('/create')
     let errors = [];
 
     //TODO: Validation
-    // if(!validation.validName(name)) errors.push("Invalid Name");
+    if(!validation.validName(name)) errors.push("Invalid Name");
     // if(!validation.validName(lastName)) errors.push("Invalid Last Name");
     // if(!validation.validUsername(username)) errors.push("Invalid User Name");
     // if(!validation.validPassword(password)) errors.push("Invalid Password");

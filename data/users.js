@@ -83,10 +83,11 @@ export const getUserById = async (userId) => {
     throw "Error: userId must be of type string!";
   }
   userId = userId.trim();
-  if (length(userId) == 0){
+
+  if (userId.length == 0){
     throw "Error: userId cannot be empty!";
   }
-  
+
   userId = new ObjectId(userId);
 
   const userCollection = await users();

@@ -46,7 +46,7 @@ export const updateEventComments = async (eventId, userId, text) => {
   eventId = eventId.trim();
   text = text.trim();
 
-  if (length(userId) == 0 || length(eventId) == 0 || length(text) == 0){
+  if (userId.length == 0 || eventId.length == 0 || text.length == 0){
     throw "Error: Values must not be empty or spaces!"
   }
   eventId = new ObjectId(eventId);
@@ -71,7 +71,7 @@ export const updateEventAttendees = async (eventId, userId) => {
   userId = userId.trim();
   eventId = eventId.trim();
 
-  if (length(userId) == 0 || length(eventId) == 0){
+  if (userId.length == 0 || eventId.length == 0){
     throw "Error: Values must not be empty or spaces!"
   }
 
@@ -95,7 +95,7 @@ export const updateEventLikes = async (eventId) => {
   }
 
   eventId = eventId.trim();
-  if (length(eventId) == 0){
+  if (eventId.length == 0){
     throw "Error: EventId cannot just be spaces!";
   }
 
@@ -121,7 +121,7 @@ export const getEventById = async (eventId) => {
   }
 
   eventId = eventId.trim();
-  if (length(eventId) == 0){
+  if (eventId.length == 0){
     throw "Error: EventId cannot just be spaces!";
   }
 
@@ -144,10 +144,10 @@ export const getEventsByTag = async (tag) => {
   }
 
   tag = tag.trim();
-  if (length(tag) == 0){
+  if (tag.length == 0){
     throw "Error: Tag must not be just spaces!";
   }
-  
+
   const eventCollection = await events();
 
   const eventsFound = await eventCollection.find({tags: tag}).toArray();
