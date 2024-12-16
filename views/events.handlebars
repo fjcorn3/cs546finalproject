@@ -13,4 +13,13 @@
         <ol id="eventList"></ol>
     </div>
   </section>
+  {{#if signedIn}}
+    <section class="content-section">
+    {{#if attendee}}
+      <h2>Favorite Events</h2>
+    {{else}}
+      <h2>Events Posted</h2>
+    {{/if}}
+    </section>
+  {{/if}}
 </div>

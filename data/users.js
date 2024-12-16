@@ -4,7 +4,7 @@ import {ObjectId} from 'mongodb';
 
 const saltRounds = 16;
 
-const createUser = async (firstName, lastName, username, email, role, phoneNumber, age, password) => {
+export const createUser = async (firstName, lastName, username, email, role, phoneNumber, age, password) => {
   if (!firstName) {
     throw new Error("You must provide a first name.");
   }
@@ -111,7 +111,7 @@ const createUser = async (firstName, lastName, username, email, role, phoneNumbe
   return {registrationCompleted: true};
 };
 
-const getUserById = async (username, password) => {
+export const getUser = async (username, password) => {
   if (!username) {
     throw new Error("You must provide a user ID.");
   }
@@ -164,4 +164,3 @@ const getUserById = async (username, password) => {
 
 
 
-export { createUser, getUserById };

@@ -1,127 +1,106 @@
 import Router from 'express';
 import * as validation from '../validation.js';
+import * as userData from '../data/users.js';
 
 const router = Router();
 
+// ROUTE: /home
+// METHODS: GET
 router.route('/home').get(async (req, res) => {
   res.render('home', {title: "Home", signedIn: req.session.user ? true : false});
 });
 
+
+// ROUTE: /signout
+// METHODS: GET
 router.route('/signout').get(async (req, res) => {
   req.session.destroy();
   res.render('signout', {title: "Signed Out"});
 });
 
+
+// ROUTE: /signin
+// METHODS: GET, POST
 router.route('/signin')
   .get(async (req, res) => {
     res.render('signin', {title: "Sign In"});
   })
   .post(async (req, res) => {
     const { username, password } = req.body;
-    if (!username || !password) {
-        req.session.error = 'All fields must be filled out.';
-        return res.redirect('/signin');
-    }
-    if (typeof username !== 'string' || username.trim().length < 5 || username.trim().length > 10) {
-        req.session.error = 'Username must be between 5 and 10 characters.';
-        return res.redirect('/signin');
-    }
-    if (typeof password !== 'string' || password.length < 8 || !/[A-Z]/.test(password) || !/\d/.test(password) || !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-        req.session.error = 'Password must be at least 8 characters long, contain an uppercase letter, a number, and a special character.';
-        return res.redirect('/signin');
-    }
-    try {
-        const user = await getUserById(username, password);
 
-        req.session.user = {
-            firstName: user.firstName,
-            lastName: user.lastName,
-            username: user.username,
-            age: user.age,
-            phoneNumber: user.phoneNumber,
-            email: user.email,
-            role: user.role,
-        };
-  
-        if (user.role === 'attendee') {
-          return res.redirect('/eventPage');
-        } else {
-          return res.redirect(`/coordinatorProfile/${user.username}`);
-        }
-      } catch (e) {
-        if (e.message === "Either the username or password is invalid."){
-            res.redirect('/signin');
-        }
-        return next(e);
-      }
+    if (!username || !password) {
+      return res.status(400).render('signin', {title: "Sign In", error: "Must Fill Out Form"});
+    }
+
+    let errors = [];
+
+    if(!validation.validUsername(username)) errors.push("Invalid User Name"); 
+    if(!validation.validPassword(password)) errors.push("Invalid Password"); 
+
+    if(errors.length !== 0) {
+      return res.status(400).render('signin', {title: "Sign In", error: errors.join(', ')});
+    }
+
+    try{
+      const user = await userData.getUser(username, password);
+      req.session.user = user;
+      
+      res.redirect('/home');
+    }
+    catch(e) {
+      res.status(400).render('signin', {title: "Sign In", error: e.message})
+    }
   });
 
+// ROUTE: /signout
+// METHODS: GET, POST
 router.route('/signup')
   .get(async (req, res) => {
     res.render('signup', {title: "Sign Up"});
   })
   .post(async (req, res) => {
-    let { firstName, lastName, username, email, role, phoneNumber, age, password } = req.body;
-    if (!firstName || !lastName || !username || !email || !role || !phoneNumber || !age || !password) {
-        req.session.error = 'All fields must be filled out.';
-        return res.redirect('/signup');
-    }
-  
-    if (typeof firstName !== 'string' || firstName.trim().length < 2 || firstName.trim().length > 25) {
-        req.session.error = 'First name must be between 2 and 25 characters.';
-        return res.redirect('/signup');
-    }
-  
-    if (typeof lastName !== 'string' || lastName.trim().length < 2 || lastName.trim().length > 25) {
-        req.session.error = 'Last name must be between 2 and 25 characters.';
-        return res.redirect('/signup');
-    }
-  
-    if (typeof username !== 'string' || username.trim().length < 5 || username.trim().length > 10) {
-        req.session.error = 'Username must be between 5 and 10 characters.';
-        return res.redirect('/signup');
-    }
-  
-    if (!/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)) {
-        req.session.error = 'Email must be a valid email address.';
-        return res.redirect('/signup');
-    }
-  
-    if (!/^[0-9]{10}$/.test(phoneNumber)) {
-        req.session.error = 'Phone number must be a valid 10-digit number.';
-        return res.redirect('/signup');
-    }
-  
-    if (typeof Number(age) !== 'number' || Number(age) < 18) {
-        req.session.error = 'Age must be a number and at least 18 years old.';
-        return res.redirect('/signup');
-    }
-  
-    if (typeof password !== 'string' || password.length < 8 || !/[A-Z]/.test(password) || !/\d/.test(password) || !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-        req.session.error = 'Password must be at least 8 characters long, contain an uppercase letter, a number, and a special character.';
-        return res.redirect('/signup');
-    }
-    try {
-        const user = await createUser(firstName, lastName, username, email, role, phoneNumber, age, password);
-        if (user.registrationCompleted === true){
-            res.redirect('/signin');
-        }
-    } catch (e) {
-        if (e.message === "Either the username or password is invalid."){
-            res.redirect('/signup');
-        }
-        //console.log(e);
-        //res.redirect('/signin');
+    let { firstName, lastName, username, email, role, phoneNumber, age, password, confirmPassword} = req.body;
 
-        res.redirect('/signin');
-        return next(e);
-  }
+    if (!firstName || !lastName || !username || !email || !role || !phoneNumber || !age || !password || !confirmPassword) {
+      return res.status(400).render('signup', {title: "Sign Up", error: "Must Fill Out Form"});
+    }
+
+    let errors = [];
+
+    if(!validation.validName(firstName)) errors.push("Invalid First Name");
+    if(!validation.validName(lastName)) errors.push("Invalid Last Name");
+    if(!validation.validUsername(username)) errors.push("Invalid User Name");
+    if(!validation.validPassword(password)) errors.push("Invalid Password");
+    if(!validation.validAge(age)) errors.push('Age must be a number and at least 18 years old.');
+    if(password !== confirmPassword) errors.push("Passwords Do Not Match");
+    if (!/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)) errors.push('Email must be a valid email address.');
+    if (!/^[0-9]{10}$/.test(phoneNumber)) errors.push('Phone number must be a valid 10-digit number.');
+    if(typeof role !== 'string' || role.trim() !== 'attendee' && role.trim() !== 'organizer') errors.push("Invalid Role");
+
+    if(errors.length !== 0) {
+      return res.status(400).render('signup', {title: "Sign Up", error: errors.join(', ')});
+    }
+
+    try{
+      const user = await userData.createUser(firstName, lastName, username, email, role, phoneNumber, age, password);
+
+      if(!user.registrationCompleted) {
+        return res.status(500).render('signup', {title: "Sign Up", error: "Internal Server Error"});
+      }
+
+      res.redirect('/signin')
+    }
+    catch(e) {
+      res.status(400).render('signup', {title: "Sign Up", error: e.message});
+    }   
   });
 
 
+// ROUTE: /events
+// METHODS: GET, POST
 router.route('/events')
   .get(async (req, res) => {
-    res.render('events', {title: "Events"});
+    res.render('events', {title: "Events", signedIn: req.session.user ? true : false});
   })
   .post(async (req, res) => {
     res.render('events', {title: "Events"});

@@ -1,6 +1,5 @@
-<form action="/signup" method="POST" id="signupForm">
+<form action="/signup" method="POST" id="signupForm" class="auth-form">
   <div id="error" class="error" {{#unless error}} hidden {{/unless}}>
-    <span>Error: </span>
     <span id="error-message"> {{#if error}} {{error}} {{/if}} </span>
   </div>
   <label for="firstName">First Name:</label>

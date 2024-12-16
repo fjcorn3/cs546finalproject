@@ -8,7 +8,7 @@ export const validName = (name) => {
   return true;
 };
 
-export const validUserId = (userId) => {
+export const validUsername = (userId) => {
   if(typeof userId!== 'string') return false;
  
   userId = userId.trim();
@@ -38,6 +38,16 @@ export const validColor = (color) => {
   const colorRegex = /^#[a-fA-F0-9]{6}$/g;
 
   if(!colorRegex.test(color)) return false;
+
+  return true;
+}
+
+export const validAge = (age) => {
+  age = parseInt(age);
+
+  if(isNaN(age)) return false;
+
+  if(age < 12 || age > 100) return false;
 
   return true;
 }

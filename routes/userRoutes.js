@@ -1,7 +1,6 @@
 import express from 'express';
 import path from 'path';
 import { createUser, getUserById } from '../data/users.js';
-import { signinRedirect, signupRedirect, authenticateUser, authenticateOrganizer, allowSignOut } from '../middleware.js';
 import {ObjectId} from 'mongodb';
 
 const router = express.Router();

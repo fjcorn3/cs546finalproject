@@ -1,6 +1,3 @@
-import userRoutes from './userRoutes.js';
-import attendeePostsRoutes from './attendeePostsRoutes.js';
-import organizerPostsRoutes from './organizerPostsRoutes.js';
 import routes from './routes.js';
 
 const constructorMethod = (app) => {

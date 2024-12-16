@@ -1,8 +1,7 @@
 import express from 'express';
 import session from 'express-session';
 import path from 'path';
-import routes from './routes/index.js';  // Ensure this points to the correct route file
-import { logRequest } from './middleware.js'; // Ensure middleware is properly imported
+import * as middleware from './middleware.js'; // Ensure middleware is properly imported
 import { organizerPosts, attendeePosts } from './config/mongoCollections.js';
 import exphbs from 'express-handlebars';
 import constructorMethod from './routes/index.js';
@@ -10,6 +9,7 @@ import constructorMethod from './routes/index.js';
 const app = express();
 const __dirname = path.resolve();
 
+app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -22,7 +22,16 @@ app.use(
   })
 );
 
-// app.use(logRequest);
+// Custom Middleware
+app.use(middleware.logRequest);
+app.use('/signout', middleware.unauthenticatedRedirect);
+app.use('/events', middleware.unauthenticatedRedirect);
+app.use('/signin', middleware.authenticatedRedirect);
+app.use('/signup', middleware.authenticatedRedirect);
+
+app.get('/', async (req, res) => {
+  res.redirect('/home');
+});
 
 // app.get('/api/posts', async (req, res) => {
 //   const organizerPostCollection = await organizerPosts();
@@ -58,22 +67,11 @@ app.use(
 
 
 
-app.use('/public', express.static(path.join(__dirname, 'public')));
 // app.use('/static', express.static(path.join(__dirname, 'static')));
 
-// app.use('/', routes);
-
-// app.use((req, res, next) => {
-//   res.status(404).sendFile(path.join(__dirname, 'static/404.html'));
-// });
-
-app.get('/', async (req, res) => {
-  res.redirect('/home');
-});
 
 const handlebarsInstance = exphbs.create({
   defaultLayout: 'main',
-  // Specify helpers which are only registered on this instance.
   helpers: {
     asJSON: (obj, spacing) => {
       if (typeof spacing === 'number')

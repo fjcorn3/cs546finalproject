@@ -1,48 +1,37 @@
 import path from 'path';
 const __dirname = path.resolve();
 
-const logRequest = (req, res, next) => {
-  console.log(
-    `[${new Date().toUTCString()}]: ${req.method} ${req.originalUrl} ${
-      req.session.user
-        ? `(Authenticated ${req.session.user.role.toUpperCase()} User)`
-        : '(Non-Authenticated)'
-    }`
-  );
-  if (req.originalUrl === '/') {
-    if (req.session.user) {
-      return req.session.user.role === 'organizer' ? res.redirect('/coordinatorProfile/:username') : res.redirect('/eventPage');
-    } else {
-      res.sendFile(path.join(__dirname, 'static/homepage.html'));
-      //return res.redirect('/signin');
-    }
-  }
+export const logRequest = (req, res, next) => {
+  const timestamp = new Date().toUTCString();
+  let authorized = 'Non-Authenticated';
+  let role = '';
 
-  next();
-};
-
-const signinRedirect = (req, res, next) => {
   if (req.session.user) {
-    return req.session.user.role === 'organizer' ? res.redirect('/coordinatorProfile/:username') : res.redirect('/eventPage');
+    authorized = 'Authenticated - ';
+    role = req.session.user.role;
+  }
+
+  console.log(`[${timestamp}] ${req.method} ${req.originalUrl} (${authorized}${role})`); 
+
+  next();
+};
+
+export const unauthenticatedRedirect = (req, res, next) => {
+  if(!req.session.user) {
+    res.redirect('/signin');
+  }
+
+  next();
+};
+
+export const authenticatedRedirect = (req, res, next) => {
+  if(req.session.user) {
+    res.redirect('/home');
   }
   next();
 };
 
-const signupRedirect = (req, res, next) => {
-  if (req.session.user) {
-    return req.session.user.role === 'organizer' ? res.redirect('/coordinatorProfile/:username') : res.redirect('/eventPage');
-  }
-  next();
-};
-
-const authenticateUser = (req, res, next) => {
-  if (!req.session.user) {
-    return res.redirect('/signin');
-  }
-  next();
-};
-
-const authenticateOrganizer = (req, res, next) => {
+export const authenticateOrganizer = (req, res, next) => {
   if (!req.session.user) {
     return res.redirect('/signin');
   }
@@ -55,13 +44,3 @@ const authenticateOrganizer = (req, res, next) => {
   }
   next();
 };
-
-const allowSignOut = (req, res, next) => {
-  if (!req.session.user) {
-    return res.redirect('/signin');
-  }
-  next();
-};
-
-export { logRequest, signinRedirect, signupRedirect, authenticateUser, authenticateOrganizer, allowSignOut };
-
