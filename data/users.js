@@ -76,16 +76,8 @@ export const getUser = async (username, password) => {
 
 export const getUserById = async (userId) => {
   //TODO: Validation
-  if (!userId){
+  if (!ObjectId.isValid(userId)){
     throw "Error: UserId must be provided!";
-  }
-  if (typeof userId !== 'string'){
-    throw "Error: userId must be of type string!";
-  }
-  userId = userId.trim();
-
-  if (userId.length == 0){
-    throw "Error: userId cannot be empty!";
   }
 
   userId = new ObjectId(userId);
