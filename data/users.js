@@ -1,6 +1,7 @@
 import { users } from '../config/mongoCollections.js';
 import * as validation from '../validation.js';
 import bcrypt from 'bcryptjs';
+import { ObjectId } from 'mongodb';
 
 const SALTROUNDS = 10;
 
@@ -72,3 +73,16 @@ export const getUser = async (username, password) => {
 
   return user; 
 };
+
+export const getUserById = async (userId) => {
+  //TODO: Validation
+
+  userId = new ObjectId(userId);
+
+  const userCollection = await users();
+  const user = await userCollection.findOne({_id: userId});
+
+  if(!user) throw Error('User Not Found');
+
+  return user;
+}

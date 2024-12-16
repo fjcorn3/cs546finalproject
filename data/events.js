@@ -68,6 +68,8 @@ export const getEvents = async () => {
 export const getEventById = async (eventId) => {
   //TODO: Validation
 
+  eventId = new ObjectId(eventId);
+
   const eventCollection = await events();
   const event = await eventCollection.findOne({_id: eventId});
 

@@ -6,24 +6,21 @@
         {{> event}}
       {{/each}}
     </div>
+    <button>View More</button>
   </section>
   {{#if signedIn}}
     <section class="content-section">
     {{#if organizer}}
       <h2>Events Posted</h2>
-      <div class="events-container">
-        {{#each eventsPosted}}
-          {{> event}}
-        {{/each}}
-      </div>
+      <button>Create Event</button>
     {{else}}
       <h2>Favorite Events</h2>
+    {{/if}}
       <div class="events-container">
-        {{#each eventsFavorited}}
+        {{#each eventsRole}}
           {{> event}}
         {{/each}}
       </div>
-    {{/if}}
     </section>
   {{/if}}
 </div>
