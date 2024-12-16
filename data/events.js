@@ -138,9 +138,9 @@ export const getEventById = async (eventId) => {
 export const getEventsByTag = async (tag) => {
   const eventCollection = await events();
 
-  const events = await eventCollection.findOne({_id: id});
+  const eventsFound = await eventCollection.find({tags: tag}).toArray();
     
-  if(!events) throw Error('Events Not Found');
+  if(eventsFound.length === 0) throw Error('No Events Found');
 
-  return events;
+  return eventsFound;
 };

@@ -82,7 +82,7 @@ router.route('/create')
     let { name, address, date, time, description, price, familyFriendly, tags} = req.body;
 
     if (!name || !address || !date || !time || !description || !price || !familyFriendly || !tags) {
-      return res.status(400).render('createEvent', {title: "Create Event", error: "Must Fill Out Form"});
+      return res.status(400).render('createEvent', {title: "Create Event", signedIn: req.session.user ? true : false, error: "Must Fill Out Form"});
     }
 
     let errors = [];
@@ -99,21 +99,44 @@ router.route('/create')
     // if(typeof role !== 'string' || role.trim() !== 'attendee' && role.trim() !== 'organizer') errors.push("Invalid Role");
 
     if(errors.length !== 0) {
-      return res.status(400).render('createEvent', {title: "Create Event", error: errors.join(', ')});
+      return res.status(400).render('createEvent', {title: "Create Event", signedIn: req.session.user ? true : false, error: errors.join(', ')});
     }
 
     try{
       const event = await eventData.createEvent(firstName, lastName, username, email, role, phoneNumber, age, password, req.session.user._id);
 
       if(!event) {
-        return res.status(500).render('createEvent', {title: "Create Event", error: "Internal Server Error"});
+        return res.status(500).render('createEvent', {title: "Create Event", signedIn: req.session.user ? true : false, error: "Internal Server Error"});
       }
 
       res.redirect(`/events/event/${event._id}`);
     }
     catch(e) {
-      res.status(400).render('createEvent', {title: "Create Event", error: e.message});
+      res.status(400).render('createEvent', {title: "Create Event", signedIn: req.session.user ? true : false, error: e.message});
     }   
+  });
+
+// ROUTE: /events/search
+// METHODS: POST
+router.route('/search')
+  .post(async (req, res) => {
+    let { tag } = req.body;
+
+    tag = xss(tag);
+
+    try{
+      const events = await eventData.getEventsByTag(tag);
+
+      if(!events) {
+        return res.status(500).render('searchEvent', {title: "Search", signedIn: req.session.user ? true : false, error: "Internal Server Error"});
+      }
+
+      res.render('searchEvent', {title: "Search", signedIn: req.session.user ? true : false, events, tag})
+    }
+    catch(e) {
+      res.status(400).render('searchEvent', {title: "Search", signedIn: req.session.user ? true : false, error: e.message, tag});
+    }   
+
   });
 
 export default router;

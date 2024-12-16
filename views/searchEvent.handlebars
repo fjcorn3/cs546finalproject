@@ -1,0 +1,13 @@
+<div class="content">
+  <section class="content-section">
+    <h2>Search Results For: {{tag}}</h2>
+    <div id="error" class="error" {{#unless error}} hidden {{/unless}}>
+      <span id="error-message"> {{#if error}} {{error}} {{/if}} </span>
+    </div>
+    <div class="events-container">
+    {{#each events}}
+    {{> event}}
+    {{/each}}
+    </div>
+  </section>
+</div>
