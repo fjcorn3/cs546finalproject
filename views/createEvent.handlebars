@@ -1,4 +1,4 @@
-<form class="main-form" id="createEventForm" method="POST" action="/events/create">
+<form class="main-form" id="eventForm" method="POST" action="/events/create">
   <div id="error" class="error" {{#unless error}} hidden {{/unless}}>
     <span id="error-message"> {{#if error}} {{error}} {{/if}} </span>
   </div>
@@ -28,7 +28,7 @@
   </select>
 
   <label for="tags">Tags:</label>
-  <select id="tags" name="tags" multiple>
+  <select id="tags" name="tags" multiple required>
     <option value="music">music</option>
     <option value="pop">pop</option>
     <option value="outdoors">outdoors</option>
