@@ -34,23 +34,30 @@ export const createEvent = async (name, address, date, time, description, price,
 };
 
 export const updateEventComments = async (eventId, userId, text) => {
-  //TODO: Validation
+  if (!ObjectId.isValid(eventId)){
+    throw "Error: Valid EventId must be provided!";
+  }
 
-  if (!eventId || !userId || !text){
-    throw "Error: Values cannot be empty!"
+  if (!ObjectId.isValid(userId)){
+    throw "Error: Valid EventId must be provided!";
   }
-  if (typeof eventId !== 'string' || typeof userId !== 'string' || typeof text !== 'string'){
-    throw "Error: All types must be string!"
-  }
-  userId = userId.trim();
-  eventId = eventId.trim();
-  text = text.trim();
 
-  if (userId.length == 0 || eventId.length == 0 || text.length == 0){
-    throw "Error: Values must not be empty or spaces!"
-  }
   eventId = new ObjectId(eventId);
   userId = new ObjectId(userId);
+
+  if (!text){
+    throw "Error: Values cannot be empty!"
+  }
+
+  if (typeof text !== 'string'){
+    throw "Error: All types must be string!"
+  }
+
+  text = text.trim();
+
+  if (text.length == 0){
+    throw "Error: Values must not be empty or spaces!"
+  }
 
   const eventCollection = await events();
 
@@ -60,22 +67,13 @@ export const updateEventComments = async (eventId, userId, text) => {
 };
 
 export const updateEventAttendees = async (eventId, userId) => {
-  //TODO: Validation
-
-  if (!eventId || !userId){
-    throw "Error: Values cannot be empty!"
-  }
-  if (typeof eventId !== 'string' || typeof userId !== 'string'){
-    throw "Error: All types must be string!"
-  }
-  userId = userId.trim();
-  eventId = eventId.trim();
-
-  if (userId.length == 0 || eventId.length == 0){
-    throw "Error: Values must not be empty or spaces!"
+  if (!ObjectId.isValid(eventId)){
+    throw "Error: Valid EventId must be provided!";
   }
 
-  const eventCollection = await events();
+  if (!ObjectId.isValid(userId)){
+    throw "Error: Valid EventId must be provided!";
+  }
 
   eventId = new ObjectId(eventId);
   userId = new ObjectId(userId);
@@ -85,19 +83,11 @@ export const updateEventAttendees = async (eventId, userId) => {
 };
 
 export const updateEventLikes = async (eventId) => {
-  //TODO: Validation
-  if (!eventId){
-    throw "Error: EventId must be provided!";
+  if (!ObjectId.isValid(eventId)){
+    throw "Error: Valid EventId must be provided!";
   }
 
-  if (typeof eventId !== 'string'){
-    throw "Error: EventId must be a string!";
-  }
-
-  eventId = eventId.trim();
-  if (eventId.length == 0){
-    throw "Error: EventId cannot just be spaces!";
-  }
+  eventId = new ObjectId(eventId);
 
   const eventCollection = await events();
   const events = await eventCollection.findOneAndUpdate({_id: eventId}, {$inc: {likes}});
@@ -111,20 +101,9 @@ export const getEvents = async () => {
 }
 
 export const getEventById = async (eventId) => {
-  //TODO: Validation
-  if (!eventId){
-    throw "Error: EventId must be provided!";
+  if (!ObjectId.isValid(eventId)){
+    throw "Error: Valid EventId must be provided!";
   }
-
-  if (typeof eventId !== 'string'){
-    throw "Error: EventId must be a string!";
-  }
-
-  eventId = eventId.trim();
-  if (eventId.length == 0){
-    throw "Error: EventId cannot just be spaces!";
-  }
-
   eventId = new ObjectId(eventId);
 
   const eventCollection = await events();

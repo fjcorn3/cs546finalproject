@@ -30,8 +30,13 @@ router.route('/')
       }
     }
 
-    const events = await eventData.getEvents();
-    res.render('events', {title: "Events", signedIn: req.session.user ? true : false, organizer: organizer, events, eventsRole});
+    try{
+      const events = await eventData.getEvents();
+      res.render('events', {title: "Events", signedIn: req.session.user ? true : false, organizer: organizer, events, eventsRole});
+    }
+    catch(e) {
+      res.render('error', {title: "Error", signedIn: req.session.user ? true : false, message: e.message});
+    }
   });
 
 
