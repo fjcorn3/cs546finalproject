@@ -14,24 +14,24 @@ router.route('/')
     let organizer = false;
     const id = req.session.user._id;
 
-    const user = await userData.getUserById(id);
-    let eventsRole = [];
-
-    // Getting Events posted by user if they are an organizer
-    if(req.session.user.role === 'organizer') {
-      organizer = true;
-      for(let i = 0; i < user.eventsPosted.length; i++) {
-        eventsRole.push(await eventData.getEventById(user.eventsPosted[i]));
-      }
-    }
-    // Getting Events attended by user if they are an attendee 
-    else {
-      for(let i = 0; i < user.eventsFavorited.length; i++) {
-        eventsRole.push(await eventData.getEventById(user.eventsFavorited[i]));
-      }
-    }
-
     try{
+      const user = await userData.getUserById(id);
+      let eventsRole = [];
+
+      // Getting Events posted by user if they are an organizer
+      if(req.session.user.role === 'organizer') {
+        organizer = true;
+        for(let i = 0; i < user.eventsPosted.length; i++) {
+          eventsRole.push(await eventData.getEventById(user.eventsPosted[i]));
+        }
+      }
+      // Getting Events attended by user if they are an attendee 
+      else {
+        for(let i = 0; i < user.eventsFavorited.length; i++) {
+          eventsRole.push(await eventData.getEventById(user.eventsFavorited[i]));
+        }
+      }
+
       const events = await eventData.getEvents();
       res.render('events', {title: "Events", signedIn: req.session.user ? true : false, organizer: organizer, events, eventsRole});
     }
@@ -49,33 +49,47 @@ router.route('/event/:id')
       return res.status(400).render('error', {title: "Error", signedIn: req.session.user ? true : false, message: "Invalid Event"});
     }
 
-    const event = await eventData.getEventById(req.params.id);
+    try {
+      const event = await eventData.getEventById(req.params.id);
+      event.organizer = await userData.getUserById(event.organizer);
 
-    event.organizer = await userData.getUserById(event.organizer);
+      // Get Usernames of commenters
+      for(let i = 0; i < event.comments.length; i++) {
+        event.comments[i].username = (await userData.getUserById(event.comments[i].userId)).username;
+      }
 
-    // Get Usernames of commenters
-    for(let i = 0; i < event.comments.length; i++) {
-      event.comments[i].username = (await userData.getUserById(event.comments[i].userId)).username;
+      res.render('event', {title: "Event", signedIn: req.session.user ? true : false, event});
     }
-
-    res.render('event', {title: "Event", signedIn: req.session.user ? true : false, event});
+    catch(e) {
+      res.status(500).render('error', {title: "Error", signedIn: req.session.user ? true : false, message: e.message});
+    }
   })
   .post(async (req, res) => {
     if(!ObjectId.isValid(req.params.id)) {
-      return res.status(400).render('error', {title: "Error", signedIn: req.session.user ? true : false, message: "Invalid Event"});
+      return res.status(400).render('error', {title: "Error", signedIn: req.session.user ? true : false, message: "Invalid ID"});
     }
     let { comment } = req.body;
 
-    comment = xss(comment);
 
-    const event = await eventData.updateEventComments(req.params.id, req.session.user._id, comment);
-
-    // Get Usernames of commenters
-    for(let i = 0; i < event.comments.length; i++) {
-      event.comments[i].username = (await userData.getUserById(event.comments[i].userId)).username;
+    if(!comment || typeof comment !== 'string' || comment.trim().length === 0 || comment.trim().length > 255) {
+      return res.status(400).render('error', {title: "Error", signedIn: req.session.user ? true : false, message: "Invalid Comment"});
     }
 
-    res.render('event', {title: "Event", signedIn: req.session.user ? true : false, event});
+    comment = xss(comment);
+
+    try {
+      const event = await eventData.updateEventComments(req.params.id, req.session.user._id, comment);
+
+      // Get Usernames of commenters
+      for(let i = 0; i < event.comments.length; i++) {
+        event.comments[i].username = (await userData.getUserById(event.comments[i].userId)).username;
+      }
+
+      res.render('event', {title: "Event", signedIn: req.session.user ? true : false, event});
+    }
+    catch(e) {
+      res.status(500).render('error', {title: "Error", signedIn: req.session.user ? true : false, message: e.message});
+    }
   });
 
 // ROUTE: /events/create
@@ -95,67 +109,29 @@ router.route('/create')
 
     //TODO: Validation
     if(!validation.validName(name)) errors.push("Invalid Name"); //name
-
-    if (typeof address !== 'string'){ //address
-      throw "Error: Address must be of type String!";
-    }
-    if (typeof description !== 'string'){ //description
-      throw "Error: Description must be of type String!";
-    }
-    if (!Array.isArray(tags)){ //tags
-      throw "Error: Tags must be an array!";
-    }
+    if (typeof address !== 'string' || address.trim().length === 0 || address.trim().length > 255) errors.push("Address must be of type String!");
+    if (typeof description !== 'string' || description.trim().length === 0 || description.trim().length > 255) errors.push("Description must be of type String!");
+    if (isNaN(parseInt(price)) || parseInt(price) < 0) errors.push("Price must be a number!");
+    if (familyFriendly !== 'true' && familyFriendly !== 'false') errors.push("familyFriendly must be true or false!");
+    if(!validation.validDate(date)) errors.push("Invalid date! Proper Format: YYYY-MM-DD"); //date
+    if(!validation.validTime(time)) errors.push("Invalid time! Proper format: HH:MM");
+    if (!Array.isArray(tags) || tags.length === 0) errors.push("Tags must be an array!");
     
-    address = address.trim();
-    description = description.trim();
-
-    if (address.length === 0){
-      throw "Error: Address is empty!";
-    }
-    if (description.length === 0){
-      throw "Error: Description is empty!";
-    }
-
-    if (tags.length === 0){
-      throw "Error: Tags cannot be empty!";
-    }
-
     tags.forEach(tag => {
-      if (typeof tag !== 'string'){
-        throw "Each tag in Tags must be of type string!";
-      }
-      tag = tag.trim();
-      if (tag.length === 0){
-        throw "Error: Atleast one tag is empty!";
+      if (typeof tag !== 'string' || tag.trim().length === 0 || tag.trim().length > 15){
+        errors.push("Each tag in Tags must be of type string!");
       }
     });
 
-    if (isNaN(parseInt(price)) || parseInt(price) < 0){
-      throw "Error: Price must be a number!";
-    }
-
-    price = parseInt(price);
-
-    if (familyFriendly !== 'true' && familyFriendly !== 'false'){
-      throw "Error: familyFriendly must be true or false!";
-    }
-
-    familyFriendly = Boolean(familyFriendly);
-    if(!validation.validDate(date)) errors.push("Invalid date! Proper Format: YYYY-MM-DD"); //date
-    if(!validation.validTime(time)) errors.push("Invalid time! Proper format: HH:MM");
-
-    // if(!validation.validName(lastName)) errors.push("Invalid Last Name");
-    // if(!validation.validUsername(username)) errors.push("Invalid User Name");
-    // if(!validation.validPassword(password)) errors.push("Invalid Password");
-    // if(!validation.validAge(age)) errors.push('Age must be a number and at least 18 years old.');
-    // if(password !== confirmPassword) errors.push("Passwords Do Not Match");
-    // if (!/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)) errors.push('Email must be a valid email address.');
-    // if (!/^[0-9]{10}$/.test(phoneNumber)) errors.push('Phone number must be a valid 10-digit number.');
-    // if(typeof role !== 'string' || role.trim() !== 'attendee' && role.trim() !== 'organizer') errors.push("Invalid Role");
 
     if(errors.length !== 0) {
       return res.status(400).render('createEvent', {title: "Create Event", signedIn: req.session.user ? true : false, error: errors.join(', ')});
     }
+
+    address = address.trim();
+    description = description.trim();
+    price = parseInt(price);
+    familyFriendly = Boolean(familyFriendly);
 
     name = xss(name);
     description = xss(description);
