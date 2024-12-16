@@ -10,11 +10,20 @@ let rateForm = document.getElementById('rateForm');
 
 
 
-let eventsContainer = document.getElementById('event-container');
-
-if(eventsContainer) {
-  const events = await fetch('/api/events');
-}
+(async () => {
+    let eventsContainer = document.getElementById('event-container');
+  
+    if (eventsContainer) {
+      try {
+        const response = await fetch('/api/events');
+        const events = await response.json();
+        console.log('Events:', events);
+        // Handle the fetched events data here
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    }
+  })();
 
 
 
@@ -619,50 +628,50 @@ if(eventsContainer) {
             }
     }
 
-    if(commentForm){
-        commentForm.addEventListener('submit', (e) => {
-            e.preventDefault();
+//     if(commentForm){
+//         commentForm.addEventListener('submit', (e) => {
+//             e.preventDefault();
 
-            try{
+//             try{
 
-            let comment = document.getElementById("comment").value;
+//             let comment = document.getElementById("comment").value;
 
-            if(!comment) throw "must provide comment";
-            if(typeof comment !== 'string') throw "improper comment";
-            comment = comment.trim().toLowerCase();
-            if(!comment) throw "must provide comment";
+//             if(!comment) throw "must provide comment";
+//             if(typeof comment !== 'string') throw "improper comment";
+//             comment = comment.trim().toLowerCase();
+//             if(!comment) throw "must provide comment";
 
-            else{
-                commentForm.submit();
-            }
-        }catch(e){
-            //smth
-        }
-
-
-    });
-}
-
-if(rateForm){
-    rateForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        try{
-
-        let rate = document.getElementById("rate").value;
-
-        if(!rate) throw "must provide rate";
-        if(!(/^\d+$/.test(rate))) throw "rate must be a number";
-
-        else{
-            rateForm.submit();
-        }
-    }catch(e){
-        console.log(e);
-        //smth
-    }
+//             else{
+//                 commentForm.submit();
+//             }
+//         }catch(e){
+//             //smth
+//         }
 
 
-});
-}
+//     });
+// }
+
+// if(rateForm){
+//     rateForm.addEventListener('submit', (e) => {
+//         e.preventDefault();
+
+//         try{
+
+//         let rate = document.getElementById("rate").value;
+
+//         if(!rate) throw "must provide rate";
+//         if(!(/^\d+$/.test(rate))) throw "rate must be a number";
+
+//         else{
+//             rateForm.submit();
+//         }
+//     }catch(e){
+//         console.log(e);
+//         //smth
+//     }
+
+
+// });
+// }
   

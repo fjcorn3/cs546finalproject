@@ -15,9 +15,10 @@
     <a href="/profile/{{event.organizer._id}}">{{event.organizer.username}}</a>
     <br>
     <br>
-    {{event.likes}}
+    <p id="likes-count">{{event.likes}} Likes</p>
     <button id="rsvpButton">RSVP</button>
-    <button id="likeButton">Like</button>
+    <script type="module" src="/public/js/likes.js"></script>
+    <button id="likeButton" data-event-id="{{event._id}}">Like</button>
     <button id="favoriteButton">Favorite</button>
   </section>
 

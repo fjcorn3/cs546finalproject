@@ -4,6 +4,7 @@ import * as eventData from '../data/events.js';
 import * as userData from '../data/users.js';
 import * as validation from '../validation.js';
 import xss from 'xss';
+import { events } from '../config/mongoCollections.js';
 
 const router = Router();
 
@@ -199,5 +200,44 @@ router.route('/search')
     }   
 
   });
+
+router.post('/like', async (req, res) => {
+  try {
+      let { eventId } = req.body;
+
+      console.log("Request received with eventId:", eventId); // Debug: Log input
+
+      // Validate eventId
+      if (!eventId) {
+          console.error("Error: Event ID is missing");
+          return res.status(400).json({ error: "Event ID is required" });
+      }
+      if (!ObjectId.isValid(eventId)) {
+          console.error("Error: Invalid Event ID");
+          return res.status(400).json({ error: "Invalid Event ID" });
+      }
+      // Fetch the events collection
+      const eventCollection = await events();
+      console.log("Connected to the events collection"); // Debug: Collection connection
+      eventId = new ObjectId(eventId)
+      // Increment likes for the event
+      const updatedEvent = await eventCollection.findOneAndUpdate(
+          { _id: eventId },
+          { $inc: { likes: 1 } },
+          { returnDocument: "after" }
+      );
+     
+      if (!updatedEvent) {
+          console.error("Error: Event not found for ID:", eventId);
+          return res.status(404).json({ error: "Event Not Found" });
+      }
+      console.log("Event updated successfully. New likes:", updatedEvent.likes);
+
+      return res.status(200).json({ likes: updatedEvent.likes });
+  } catch (error) {
+      console.error("Error updating likes:", error); // Log any unexpected error
+      return res.status(500).json({ error: "Internal Server Error" });
+  }
+});  
 
 export default router;

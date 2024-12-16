@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongodb';
+import { ObjectId, ReturnDocument } from 'mongodb';
 import { events, users } from '../config/mongoCollections.js';
 import * as validation from '../validation.js';
 
@@ -140,7 +140,12 @@ export const updateEventLikes = async (eventId) => {
   eventId = new ObjectId(eventId);
 
   const eventCollection = await events();
-  const events = await eventCollection.findOneAndUpdate({_id: eventId}, {$inc: {likes}});
+  const event = await eventCollection.findOneAndUpdate({_id: eventId}, {$inc: {likes: 1}}, {ReturnDocument: 'after'});
+
+  if (!event.value){
+    throw Error('Event Not Found');
+  }
+  return event.value;
 };
 
 export const getEvents = async () => {
