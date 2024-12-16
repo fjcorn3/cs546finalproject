@@ -181,9 +181,6 @@ router.post('/like', async (req, res) => {
   try {
       let { eventId } = req.body;
       let userId = req.session.user._id;
-
-      console.log("Request received with eventId:", eventId); // Debug: Log input
-
       // Validate eventId
       if (!eventId) {
           console.error("Error: Event ID is missing");
@@ -195,7 +192,6 @@ router.post('/like', async (req, res) => {
       }
       // Fetch the events collection
       const eventCollection = await events();
-      console.log("Connected to the events collection"); // Debug: Collection connection
       eventId = new ObjectId(eventId)
       
       let event = await eventCollection.findOne({_id: eventId});
