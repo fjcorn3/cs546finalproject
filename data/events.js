@@ -25,6 +25,8 @@ export const createEvent = async (name, address, date, time, description, price,
 
   if(!insertionInfo.acknowledged) throw Error('Insertion Failed');
 
+  organizerId = new ObjectId(organizerId);
+
   const userCollection = await users();
   const user = await userCollection.updateOne({_id: organizerId}, {$push: {eventsPosted: insertionInfo.insertedId}})
 

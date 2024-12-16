@@ -2,6 +2,7 @@ import Router from 'express';
 import { ObjectId } from 'mongodb';
 import * as eventData from '../data/events.js';
 import * as userData from '../data/users.js';
+import * as validation from '../validation.js';
 import xss from 'xss';
 
 const router = Router();
@@ -128,13 +129,18 @@ router.route('/create')
       }
     });
 
-    if (typeof price !== 'number'){
+    if (isNaN(parseInt(price)) || parseInt(price) < 0){
       throw "Error: Price must be a number!";
     }
 
-    if (typeof familyFriendly !== 'boolean'){
+    price = parseInt(price);
+
+    if (familyFriendly !== 'true' && familyFriendly !== 'false'){
       throw "Error: familyFriendly must be true or false!";
     }
+
+    familyFriendly = Boolean(familyFriendly);
+
     // if(!validation.validName(lastName)) errors.push("Invalid Last Name");
     // if(!validation.validUsername(username)) errors.push("Invalid User Name");
     // if(!validation.validPassword(password)) errors.push("Invalid Password");
@@ -150,9 +156,12 @@ router.route('/create')
 
     name = xss(name);
     description = xss(description);
+    date = xss(date);
+    address = xss(address);
+    time = xss(time);
 
     try{
-      const event = await eventData.createEvent(firstName, lastName, username, email, role, phoneNumber, age, password, req.session.user._id);
+      const event = await eventData.createEvent(name, address, date, time, description, price, familyFriendly, tags, req.session.user._id);
 
       if(!event) {
         return res.status(500).render('createEvent', {title: "Create Event", signedIn: req.session.user ? true : false, error: "Internal Server Error"});
