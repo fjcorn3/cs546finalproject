@@ -151,7 +151,7 @@ export const updateEventLikes = async (eventId) => {
 
 export const getEvents = async () => {
   const eventCollection = await events();
-  const eventList = await eventCollection.find({}).limit(5).toArray();
+  const eventList = await eventCollection.find({}).toArray();
 
   return eventList;
 }

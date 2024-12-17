@@ -12,14 +12,7 @@
     <span>{{this}}</span>
     {{/each}}
     </p>
-  <form action="/events" method="post">
-    <button name="foo" value="rsvp">RSVP</button>
-  </form>
-  <form action="/events" method="post">
-    <button name="foo" value="rsvp">Like</button>
-  </form>
-
-  <form action="/events" method="post">
-    <button name="foo" value="rsvp">Favorite</button>
-  </form>
+  <button type="button" class="rsvpButton" data-event-id="{{_id}}">RSVP</button>
+  <button type="button" class="likeButton" data-event-id="{{_id}}">Like</button>
+  <button type="button" class="favoriteButton" data-event-id="{{_id}}">Favorite</button>
 </div>

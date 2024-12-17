@@ -16,10 +16,11 @@
     <br>
     <br>
     <p id="likes-count">{{event.likes}} Likes</p>
-    <button id="rsvpButton">RSVP</button>
+    <button type="button" id="rsvpButton">RSVP</button>
     <script type="module" src="/public/js/likes.js"></script>
-    <button id="likeButton" data-event-id="{{event._id}}">Like</button>
-    <button id="favoriteButton" 
+    <button type="button" id="likeButton" data-event-id="{{event._id}}">Like</button>
+    <button type="button"
+            id="favoriteButton" 
             data-event-id="{{event._id}}" 
             data-action="favorite">
       Favorite

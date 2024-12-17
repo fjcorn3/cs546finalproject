@@ -100,7 +100,7 @@ router.route('/create')
     res.render('createEvent', {title: "Create Event", signedIn: req.session.user ? true : false});
   })
   .post(async (req, res) => {
-    const { name, address, date, time, description, price, familyFriendly, tags} = req.body;
+    let { name, address, date, time, description, price, familyFriendly, tags} = req.body;
 
     if (!name || !address || !date || !time || !description || !price || familyFriendly == null || !tags) {
       return res.status(400).render('createEvent', {title: "Create Event", signedIn: req.session.user ? true : false, error: "Must Fill Out Form"});
