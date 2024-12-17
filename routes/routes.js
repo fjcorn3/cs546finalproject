@@ -5,6 +5,7 @@ import * as eventData from '../data/events.js';
 import xss from 'xss';
 
 const router = Router();
+let routess = true;
 
 // ROUTE: /home
 // METHODS: GET
