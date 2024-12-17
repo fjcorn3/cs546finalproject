@@ -128,11 +128,11 @@ export const updateEventAttendees = async (eventId, userId) => {
     { returnDocument: 'after' }
   );
 
-  if (!updatedEvent.value) {
+  if (!updatedEvent) {
     throw new Error("Event Not Found");
   }
 
-  return updatedEvent.value;
+  return updatedEvent;
 };
 
 export const updateEventLikes = async (eventId) => {
