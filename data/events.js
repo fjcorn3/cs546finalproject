@@ -170,6 +170,24 @@ export const getEventById = async (eventId) => {
   return event;
 }
 
+export const getEventsByIds = async (eventIds) => {
+  if (!Array.isArray(eventIds)) {
+    throw "Error: Event IDs must be provided as an array.";
+  }
+
+  const objectIds = eventIds.map((id) => {
+    if (!ObjectId.isValid(id)) {
+      throw `Error: Invalid ObjectId provided - ${id}`;
+    }
+    return new ObjectId(id);
+  });
+
+  const eventCollection = await events();
+  const eventsFound = await eventCollection.find({ _id: { $in: objectIds } }).toArray();
+
+  return eventsFound;
+};
+
 export const getEventsByTag = async (tag) => {
   if (!tag){
     throw "Error: Tag must be provided!";
