@@ -117,14 +117,6 @@ export const updateEventComments = async (eventId, userId, text) => {
 };
 
 export const updateEventAttendees = async (eventId, userId) => {
-  if (!ObjectId.isValid(eventId)) {
-    throw "Error: Valid EventId must be provided!";
-  }
-
-  if (!ObjectId.isValid(userId)) {
-    throw "Error: Valid UserId must be provided!";
-  }
-
   eventId = new ObjectId(eventId);
   userId = new ObjectId(userId);
 

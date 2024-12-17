@@ -243,9 +243,7 @@ router.post('/event/:id/rsvp', async (req, res) => {
   try {
     const userId = req.session.user._id; // Logged-in user's ID
     const eventId = req.params.id;
-
-    if (!ObjectId.isValid(eventId)) throw new Error("Invalid Event ID");
-
+    
     const updatedEvent = await eventData.updateEventAttendees(eventId, userId);
     if (!updatedEvent) throw new Error("Failed to RSVP for the event");
 
