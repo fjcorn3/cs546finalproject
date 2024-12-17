@@ -19,9 +19,12 @@
     <button id="rsvpButton">RSVP</button>
     <script type="module" src="/public/js/likes.js"></script>
     <button id="likeButton" data-event-id="{{event._id}}">Like</button>
-    <button id="favoriteButton">Favorite</button>
-  </section>
-
+    <button id="favoriteButton" 
+            data-event-id="{{event._id}}" 
+            data-action="favorite">
+      Favorite
+    </button>
+    <p id="favorite-status"></p>  </section>
 
   <section class="content-section">
     <h2>Comments</h2>
@@ -43,3 +46,5 @@
 
 
 </div>
+
+<script src="/js/main.js"></script>
