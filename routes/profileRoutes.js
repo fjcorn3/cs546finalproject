@@ -26,7 +26,7 @@ router.route('/')
     }
     // Getting Events attended by user if they are an attendee 
     for(let i = 0; i < user.eventsFavorited.length; i++) {
-      eventsPosted.push(await eventData.getEventById(user.eventsFavorited[i]));
+      eventsFavorited.push(await eventData.getEventById(user.eventsFavorited[i]));
     }
 
     res.render('profile', {title: "Profile", signedIn: req.session.user ? true : false, organizer: organizer, user, eventsFavorited, eventsPosted});
@@ -56,7 +56,7 @@ router.route('/:id')
     }
     // Getting Events attended by user if they are an attendee 
     for(let i = 0; i < user.eventsFavorited.length; i++) {
-      eventsPosted.push(await eventData.getEventById(user.eventsFavorited[i]));
+      eventsFavorited.push(await eventData.getEventById(user.eventsFavorited[i]));
     }
 
     res.render('profile', {title: "Profile", signedIn: req.session.user ? true : false, organizer: organizer, user, eventsFavorited, eventsPosted});

@@ -4,7 +4,7 @@ import * as eventData from '../data/events.js';
 import * as userData from '../data/users.js';
 import * as validation from '../validation.js';
 import xss from 'xss';
-import { events } from '../config/mongoCollections.js';
+import { events, users } from '../config/mongoCollections.js';
 
 const router = Router();
 
@@ -70,7 +70,7 @@ router.route('/event/:id')
       return res.status(400).render('error', {title: "Error", signedIn: req.session.user ? true : false, message: "Invalid ID"});
     }
     let { comment } = req.body;
-
+    const userId = req.session.user._id;
 
     if(!comment || typeof comment !== 'string' || comment.trim().length === 0 || comment.trim().length > 255) {
       return res.status(400).render('error', {title: "Error", signedIn: req.session.user ? true : false, message: "Invalid Comment"});
@@ -86,10 +86,10 @@ router.route('/event/:id')
         event.comments[i].username = (await userData.getUserById(event.comments[i].userId)).username;
       }
 
-      res.render('event', {title: "Event", signedIn: req.session.user ? true : false, event});
-    }
-    catch(e) {
-      res.status(500).render('error', {title: "Error", signedIn: req.session.user ? true : false, message: e.message});
+      return res.status(200).json({ comments: event.comments });
+    } catch (e) {
+        console.error("Error adding comment:", e);
+        return res.status(500).json({ error: "Internal Server Error" });
     }
   });
 

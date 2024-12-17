@@ -111,7 +111,7 @@ export const updateEventComments = async (eventId, userId, text) => {
 
   const eventCollection = await events();
 
-  const event = await eventCollection.findOneAndUpdate({_id: eventId}, {$push: {comments: {userId, text}}});
+  const event = await eventCollection.findOneAndUpdate({_id: eventId}, {$push: {comments: {userId, text, date:new Date()}}}, {returnDocument: 'after'});
 
   return event;
 };
