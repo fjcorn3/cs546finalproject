@@ -89,3 +89,51 @@ export const getUserById = async (userId) => {
 
   return user;
 }
+
+export const addFavoriteEvent = async (userId, eventId) => {
+  if (!ObjectId.isValid(userId)) throw new Error("Invalid User ID");
+  if (!ObjectId.isValid(eventId)) throw new Error("Invalid Event ID");
+
+  const userCollection = await users();
+  const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+
+  if (!user) throw new Error("User not found");
+
+  // Prevent duplication of event IDs
+  if (!user.eventsFavorited.includes(eventId)) {
+    const updateResult = await userCollection.updateOne(
+      { _id: new ObjectId(userId) },
+      { $push: { eventsFavorited: eventId } }
+    );
+
+    if (updateResult.modifiedCount === 0) throw new Error("Could not favorite the event");
+  }
+
+  return { success: true, message: "Event added to favorites" };
+};
+
+export const removeFavoriteEvent = async (userId, eventId) => {
+  if (!ObjectId.isValid(userId)) throw new Error("Invalid User ID");
+  if (!ObjectId.isValid(eventId)) throw new Error("Invalid Event ID");
+
+  const userCollection = await users();
+  const updateResult = await userCollection.updateOne(
+    { _id: new ObjectId(userId) },
+    { $pull: { eventsFavorited: eventId } }
+  );
+
+  if (updateResult.modifiedCount === 0) throw new Error("Could not unfavorite the event");
+
+  return { success: true, message: "Event removed from favorites" };
+};
+
+export const getFavoriteEvents = async (userId) => {
+  if (!ObjectId.isValid(userId)) throw new Error("Invalid User ID");
+
+  const userCollection = await users();
+  const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+
+  if (!user) throw new Error("User not found");
+
+  return user.eventsFavorited;
+};

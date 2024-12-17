@@ -100,7 +100,7 @@ router.route('/create')
     res.render('createEvent', {title: "Create Event", signedIn: req.session.user ? true : false});
   })
   .post(async (req, res) => {
-    let { name, address, date, time, description, price, familyFriendly, tags} = req.body;
+    const { name, address, date, time, description, price, familyFriendly, tags} = req.body;
 
     if (!name || !address || !date || !time || !description || !price || familyFriendly == null || !tags) {
       return res.status(400).render('createEvent', {title: "Create Event", signedIn: req.session.user ? true : false, error: "Must Fill Out Form"});
@@ -141,7 +141,17 @@ router.route('/create')
     time = xss(time);
 
     try{
-      const event = await eventData.createEvent(name, address, date, time, description, price, familyFriendly, tags, req.session.user._id);
+      const event = await eventData.createEvent(
+        name,
+        address,
+        date,
+        time,
+        description,
+        Number(price), // Ensure price is a number
+        familyFriendly === 'true', // Convert familyFriendly to a boolean
+        Array.isArray(tags) ? tags : [tags], // Ensure tags are an array
+        req.session.user._id // Organizer ID
+      );
 
       if(!event) {
         return res.status(500).render('createEvent', {title: "Create Event", signedIn: req.session.user ? true : false, error: "Internal Server Error"});

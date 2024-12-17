@@ -5,10 +5,8 @@ let eventsList = document.getElementById('eventsList');
 let coordinatorProfile = document.getElementById('OrganizerEvents');
 let reviewList = document.getElementById('reviewsList');
 let rateForm = document.getElementById('rateForm');
-
-
-
-
+let favoriteButton = document.getElementById('favoriteButton');
+let favoriteStatus = document.getElementById('favorite-status');
 
 (async () => {
     let eventsContainer = document.getElementById('event-container');
@@ -58,6 +56,39 @@ let rateForm = document.getElementById('rateForm');
     //     });
     // }
 
+    if (favoriteButton) {
+        favoriteButton.addEventListener('click', async () => {
+          const eventId = favoriteButton.dataset.eventId; 
+          const action = favoriteButton.dataset.action;
+      
+          try {
+            const response = await fetch(`/${action}/${eventId}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+            });
+      
+            const result = await response.json();
+      
+            if (response.ok) {
+              favoriteStatus.textContent = result.message;
+      
+              if (action === 'favorite') {
+                favoriteButton.textContent = 'Unfavorite';
+                favoriteButton.dataset.action = 'unfavorite';
+              } else {
+                favoriteButton.textContent = 'Favorite';
+                favoriteButton.dataset.action = 'favorite';
+              }
+            } else {
+              favoriteStatus.textContent = result.error || 'An error occurred';
+            }
+          } catch (err) {
+            console.error('Error:', err);
+            favoriteStatus.textContent = 'An error occurred. Please try again.';
+          }
+        });
+      }
+      
     if(postForm){
         postForm.addEventListener('submit', async(e) => {
             const description = document.getElementById('description').value.trim();

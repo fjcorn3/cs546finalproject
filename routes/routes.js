@@ -58,7 +58,6 @@ router.route('/signin')
     try{
       const user = await userData.getUser(username, password);
       req.session.user = user;
-      
       res.redirect('/home');
     }
     catch(e) {
@@ -113,6 +112,47 @@ router.route('/signup')
     }   
   });
 
+  router.post('/favorite/:eventId', async (req, res) => {
+    try {
+      const userId = req.session.userId;
+      const { eventId } = req.params;
+  
+      await addFavoriteEvent(userId, eventId);
+      res.json({ success: true, message: 'Event added to favorites' });
+    } catch (e) {
+      res.status(400).json({ error: e.message });
+    }
+  });
+  
+  router.post('/unfavorite/:eventId', async (req, res) => {
+    try {
+      const userId = req.session.userId;
+      const { eventId } = req.params;
+  
+      await removeFavoriteEvent(userId, eventId);
+      res.json({ success: true, message: 'Event removed from favorites' });
+    } catch (e) {
+      res.status(400).json({ error: e.message });
+    }
+  });
+  
+  router.get('/profile', async (req, res) => {
+    try {
+      const userId = req.session.userId;
+      const user = await userData.getUserById(userId);
+      const favoritedEvents = await eventData.getEventsByIds(user.eventsFavorited || []);
+      const eventsPosted = user.role === 'organizer' ? await eventData.getEventsByIds(user.eventsPosted || []) : [];
+  
+      res.render('profile.handlebars', {
+        user,
+        favoritedEvents,
+        eventsPosted,
+        organizer: user.role === 'organizer',
+      });
+    } catch (e) {
+      res.status(500).render('error.handlebars', { error: e.message });
+    }
+  });
 
   
 export default router;
