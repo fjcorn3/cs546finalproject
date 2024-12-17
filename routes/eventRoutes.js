@@ -239,19 +239,24 @@ router.post('/like', async (req, res) => {
   }
 });  
 
-router.post('/event/:id/rsvp', async (req, res) => {
+router.post('/rsvp', unauthenticatedRedirect, async (req, res) => {
+  const { id } = req.params;
+  const userId = req.session.user._id;
+
   try {
-    const userId = req.session.user._id; // Logged-in user's ID
-    const eventId = req.params.id;
+    if (!ObjectId.isValid(id)) throw new Error("Invalid Event ID");
 
-    if (!ObjectId.isValid(eventId)) throw new Error("Invalid Event ID");
+    const eventCollection = await events();
+    const updatedEvent = await eventCollection.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $addToSet: { attendees: req.session.user.username } }, // Avoid duplicates
+      { returnDocument: 'after' }
+    );
 
-    const updatedEvent = await eventData.updateEventAttendees(eventId, userId);
-    if (!updatedEvent) throw new Error("Failed to RSVP for the event");
+    if (!updatedEvent) throw new Error("Event not found");
 
-    res.json({ success: true, message: "RSVP successful!" });
+    res.json({ message: "Successfully RSVPed!", attendees: updatedEvent.attendees });
   } catch (e) {
-    console.error(e);
     res.status(400).json({ error: e.message });
   }
 });

@@ -57,30 +57,35 @@ const rsvpButton = document.getElementById('rsvpButton');
     //       eventsList.innerHTML = '<p>Failed to load events. Please try again later.</p>';
     //     });
     // }
-    if (rsvpButton) {
-        rsvpButton.addEventListener('click', async () => {
-          const eventId = rsvpButton.dataset.eventId;
-      
-          try {
-            const response = await fetch(`/events/event/${eventId}/rsvp`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-            });
-      
-            const result = await response.json();
-      
-            if (response.ok) {
-              alert(result.message); // Show RSVP success message
-              location.reload(); // Reload to display updated attendees list
-            } else {
-              alert(result.error || "Failed to RSVP");
-            }
-          } catch (err) {
-            console.error('Error:', err);
-            alert("An error occurred. Please try again.");
-          }
-        });
-      }      
+if (rsvpButton) {
+  rsvpButton.addEventListener('click', async () => {
+    const eventId = rsvpButton.dataset.eventId;
+
+    if (!eventId) {
+      alert("Event ID missing. Please refresh the page.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`/events/event/${eventId}/rsvp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert(result.message); // RSVP success
+        location.reload(); // Reload to update attendees
+      } else {
+        alert(result.error || "Failed to RSVP");
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      alert("An error occurred. Please try again.");
+    }
+  });
+}      
 
     if (favoriteButton) {
         favoriteButton.addEventListener('click', async () => {

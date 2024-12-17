@@ -130,7 +130,6 @@ export const updateEventAttendees = async (eventId, userId) => {
 
   const eventCollection = await events();
 
-  // Add userId to attendees only if it's not already there
   const updatedEvent = await eventCollection.findOneAndUpdate(
     { _id: eventId },
     { $addToSet: { attendees: userId } }, // Prevent duplicate userIds
