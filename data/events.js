@@ -117,20 +117,31 @@ export const updateEventComments = async (eventId, userId, text) => {
 };
 
 export const updateEventAttendees = async (eventId, userId) => {
-  if (!ObjectId.isValid(eventId)){
+  if (!ObjectId.isValid(eventId)) {
     throw "Error: Valid EventId must be provided!";
   }
 
-  if (!ObjectId.isValid(userId)){
-    throw "Error: Valid EventId must be provided!";
+  if (!ObjectId.isValid(userId)) {
+    throw "Error: Valid UserId must be provided!";
   }
 
   eventId = new ObjectId(eventId);
   userId = new ObjectId(userId);
 
   const eventCollection = await events();
-  const event = await eventCollection.findOneAndUpdate({_id: eventId}, {$push: {attendees: userId}});
-  return event;
+
+  // Add userId to attendees only if it's not already there
+  const updatedEvent = await eventCollection.findOneAndUpdate(
+    { _id: eventId },
+    { $addToSet: { attendees: userId } }, // Prevent duplicate userIds
+    { returnDocument: 'after' }
+  );
+
+  if (!updatedEvent.value) {
+    throw new Error("Event Not Found");
+  }
+
+  return updatedEvent.value;
 };
 
 export const updateEventLikes = async (eventId) => {

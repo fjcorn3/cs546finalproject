@@ -28,6 +28,19 @@
     <p id="favorite-status"></p>  </section>
 
 <section class="content-section">
+  <h3>Attendees:</h3>
+  {{#if event.attendees.length}}
+    <ul>
+      {{#each event.attendees}}
+        <li>{{this}}</li>
+      {{/each}}
+    </ul>
+  {{else}}
+    <p>No attendees yet. Be the first to RSVP!</p>
+  {{/if}}
+</section>
+
+<section class="content-section">
     <h2>Comments</h2>
     <form id="commentForm" data-event-id="{{event._id}}">
         <label for="comment">Comment:</label>

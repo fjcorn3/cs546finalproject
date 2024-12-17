@@ -7,6 +7,8 @@ let reviewList = document.getElementById('reviewsList');
 let rateForm = document.getElementById('rateForm');
 let favoriteButton = document.getElementById('favoriteButton');
 let favoriteStatus = document.getElementById('favorite-status');
+const rsvpButton = document.getElementById('rsvpButton');
+
 
 (async () => {
     let eventsContainer = document.getElementById('event-container');
@@ -55,6 +57,30 @@ let favoriteStatus = document.getElementById('favorite-status');
     //       eventsList.innerHTML = '<p>Failed to load events. Please try again later.</p>';
     //     });
     // }
+    if (rsvpButton) {
+        rsvpButton.addEventListener('click', async () => {
+          const eventId = rsvpButton.dataset.eventId;
+      
+          try {
+            const response = await fetch(`/events/event/${eventId}/rsvp`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+            });
+      
+            const result = await response.json();
+      
+            if (response.ok) {
+              alert(result.message); // Show RSVP success message
+              location.reload(); // Reload to display updated attendees list
+            } else {
+              alert(result.error || "Failed to RSVP");
+            }
+          } catch (err) {
+            console.error('Error:', err);
+            alert("An error occurred. Please try again.");
+          }
+        });
+      }      
 
     if (favoriteButton) {
         favoriteButton.addEventListener('click', async () => {

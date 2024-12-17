@@ -46,23 +46,30 @@ router.route('/')
 // METHODS: GET, POST, PATCH
 router.route('/event/:id')
   .get(async (req, res) => {
-    if(!ObjectId.isValid(req.params.id)) {
-      return res.status(400).render('error', {title: "Error", signedIn: req.session.user ? true : false, message: "Invalid Event"});
+    if (!ObjectId.isValid(req.params.id)) {
+      return res.status(400).render('error', { title: "Error", signedIn: req.session.user ? true : false, message: "Invalid Event" });
     }
-
+  
     try {
       const event = await eventData.getEventById(req.params.id);
       event.organizer = await userData.getUserById(event.organizer);
+  
+      // Fetch attendee usernames
+      const attendees = [];
+      for (let userId of event.attendees) {
+        const user = await userData.getUserById(userId);
+        if (user) attendees.push(user.username);
+      }
+      event.attendees = attendees;
 
-      // Get Usernames of commenters
-      for(let i = 0; i < event.comments.length; i++) {
+      // Populate comment usernames
+      for (let i = 0; i < event.comments.length; i++) {
         event.comments[i].username = (await userData.getUserById(event.comments[i].userId)).username;
       }
-
-      res.render('event', {title: "Event", signedIn: req.session.user ? true : false, event});
-    }
-    catch(e) {
-      res.status(500).render('error', {title: "Error", signedIn: req.session.user ? true : false, message: e.message});
+  
+      res.render('event', { title: "Event", signedIn: req.session.user ? true : false, event, attendees });
+    } catch (e) {
+      res.status(500).render('error', { title: "Error", signedIn: req.session.user ? true : false, message: e.message });
     }
   })
   .post(async (req, res) => {
@@ -231,5 +238,23 @@ router.post('/like', async (req, res) => {
       return res.status(500).json({ error: "Internal Server Error" });
   }
 });  
+
+router.post('/event/:id/rsvp', async (req, res) => {
+  try {
+    const userId = req.session.user._id; // Logged-in user's ID
+    const eventId = req.params.id;
+
+    if (!ObjectId.isValid(eventId)) throw new Error("Invalid Event ID");
+
+    const updatedEvent = await eventData.updateEventAttendees(eventId, userId);
+    if (!updatedEvent) throw new Error("Failed to RSVP for the event");
+
+    res.json({ success: true, message: "RSVP successful!" });
+  } catch (e) {
+    console.error(e);
+    res.status(400).json({ error: e.message });
+  }
+});
+
 
 export default router;
