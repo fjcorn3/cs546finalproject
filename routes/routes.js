@@ -114,10 +114,10 @@ router.route('/signup')
 
   router.post('/favorite/:eventId', async (req, res) => {
     try {
-      const userId = req.session.userId;
+      const userId = req.session.user._id;
       const { eventId } = req.params;
   
-      await addFavoriteEvent(userId, eventId);
+      await userData.addFavoriteEvent(userId, eventId);
       res.json({ success: true, message: 'Event added to favorites' });
     } catch (e) {
       res.status(400).json({ error: e.message });
@@ -126,10 +126,10 @@ router.route('/signup')
   
   router.post('/unfavorite/:eventId', async (req, res) => {
     try {
-      const userId = req.session.userId;
+      const userId = req.session.user._id;
       const { eventId } = req.params;
   
-      await removeFavoriteEvent(userId, eventId);
+      await userData.removeFavoriteEvent(userId, eventId);
       res.json({ success: true, message: 'Event removed from favorites' });
     } catch (e) {
       res.status(400).json({ error: e.message });
